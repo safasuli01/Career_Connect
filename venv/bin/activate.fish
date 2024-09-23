@@ -33,7 +33,11 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
+<<<<<<< HEAD
 set -gx VIRTUAL_ENV "/media/safa/01DAA8A827640790/Desktop/Safa-사사/FSWDP/Final_project/Career_Connect/venv"
+=======
+set -gx VIRTUAL_ENV "/home/gehan/Desktop/graduation/Career_Connect/venv"
+>>>>>>> c0a960686dd443ea6796c705fb824a5be168e6f5
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

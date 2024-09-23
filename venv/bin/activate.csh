@@ -8,7 +8,11 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
+<<<<<<< HEAD
 setenv VIRTUAL_ENV "/media/safa/01DAA8A827640790/Desktop/Safa-사사/FSWDP/Final_project/Career_Connect/venv"
+=======
+setenv VIRTUAL_ENV "/home/gehan/Desktop/graduation/Career_Connect/venv"
+>>>>>>> c0a960686dd443ea6796c705fb824a5be168e6f5
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"
