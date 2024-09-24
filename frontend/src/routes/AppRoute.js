@@ -14,14 +14,14 @@ function AppRoutes() {
     
     <Router>
       <Routes>
-        <Route path='/login' component={Login}/>
-        <Route path="/register" exact component={Register} />
-        <Route path="/register/freelancer" component={Freelancer} />
-        <Route path="/register/employee" component={EmployeeForm} />
-        <Route path="/register/job-seeker" component={JobSeekerForm} />
-        <Route path="/register/company" component={Company} />
-        <Route path="/register/employee-search" component={EmployeeSearchForm} />
-        <Route path="/register/client-based" component={ClientBasedForm} />
+        <Route path='/login' element={<Login/>}/>
+        <Route path="/register" exact element={<Register/>} />
+        <Route path="/register/freelancer" element={<Freelancer/>} />
+        <Route path="/register/employee" element={<EmployeeForm/>} />
+        <Route path="/register/job-seeker" element={<JobSeekerForm/>} />
+        <Route path="/register/company" element={<Company/>} />
+        <Route path="/register/employee-search" element={<EmployeeSearchForm/>} />
+        <Route path="/register/client-based" element={<ClientBasedForm/>} />
       </Routes>
     </Router>
   );

@@ -9,12 +9,12 @@ const CompanyRegistration = () => {
         <h2>Company Registration</h2>
         <div className="login-form">
           <div className="group">
-            <Link to="/register/company/employee-search" className="button">
+            <Link to="/register/employee-search" className="button">
               Employee Search Registration
             </Link>
           </div>
           <div className="group">
-            <Link to="/register/company/client-based" className="button">
+            <Link to="/register/client-based" className="button">
               Client-Based Company Registration
             </Link>
           </div>
