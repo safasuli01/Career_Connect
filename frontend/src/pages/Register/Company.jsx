@@ -10,12 +10,12 @@ const CompanyRegistration = () => {
         <div className="login-form">
           <div className="group">
             <Link to="/register/employee-search" className="button">
-              Employee Search Registration
+              Employee Hiring Company
             </Link>
           </div>
           <div className="group">
             <Link to="/register/client-based" className="button">
-              Client-Based Company Registration
+              Client-Based Company 
             </Link>
           </div>
         </div>

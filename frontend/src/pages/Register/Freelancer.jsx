@@ -10,12 +10,12 @@ const FreelancerRegistration = () => {
         <div className="login-form">
           <div className="group">
             <Link to="/register/employee" className="button">
-              Employee Registration
+              Client, hiring for a project
             </Link>
           </div>
           <div className="group">
             <Link to="/register/job-seeker" className="button">
-              Job Seeker Registration
+              Client, looking for a job
             </Link>
           </div>
         </div>

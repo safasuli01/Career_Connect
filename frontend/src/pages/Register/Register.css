@@ -1,121 +1,77 @@
-/* body {
-    margin: 0;
-    color: #6a6f8c;
-    background: #c8c8c8;
-    font: 600 16px/18px "Open Sans", sans-serif;
-  }
-  .login-wrap {
-    width: 100%;
-    margin: auto;
-    max-width: 525px;
-    min-height: 670px;
-    position: relative;
-    background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg)
-      no-repeat center;
-    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-  }
-  .login-html {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    padding: 90px 70px 50px 70px;
-    background: rgba(40, 57, 101, 0.9);
-  }
-  .login-html .group {
-    margin-bottom: 15px;
-  }
-  .login-html .label,
-  .login-html .input,
-  .login-html .button {
-    width: 100%;
-    color: #fff;
-    display: block;
-  }
-  .login-html .input,
-  .login-html .button {
-    border: none;
-    padding: 15px 20px;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-  .login-html .label {
-    color: #aaa;
-    font-size: 12px;
-  }
-  .login-html .button {
-    background: #1161ee;
-  }
-  .hr {
-    height: 2px;
-    margin: 60px 0 50px 0;
-    background: rgba(255, 255, 255, 0.2);
-  }
-  .foot-lnk {
-    text-align: center;
-  }
-   */
-
-   body {
-    margin: 0;
-    color: #6a6f8c;
-    background: #c8c8c8;
-    font: 600 16px/18px "Open Sans", sans-serif;
+body {
+  margin: 0;
+  color: #6a6f8c;
+  background: #c8c8c8;
+  font: 600 16px/18px "Open Sans", sans-serif;
+  height: 100vh; /* Ensure body takes full height */
+  overflow: hidden; /* Prevent body scroll */
 }
 
 .login-wrap {
-    width: 100%;
-    margin: auto;
-    max-width: 525px;
-    min-height: 670px;
-    position: relative;
-    background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg)
-      no-repeat center;
-    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  width: 100%;
+  margin: auto;
+  max-width: 525px;
+  min-height: 100vh; /* Use viewport height to extend full height */
+  position: relative;
+  background: url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg)
+    no-repeat center center; /* Center the background image */
+  background-size: cover; /* Ensure the image covers the entire area */
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  overflow: auto; /* Allow scrolling within the login-wrap */
+}
+
+/* Hide scrollbar for Webkit browsers */
+.login-wrap::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
 }
 
 .login-html {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    padding: 90px 70px 50px 70px;
-    background: rgba(40, 57, 101, 0.9);
+  width: 100%;
+  min-height: 100%; /* Ensure content area is at least full height */
+  padding: 90px 70px 50px 70px;
+  background: rgba(40, 57, 101, 0.9);
 }
 
 .login-html .group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .login-html .label,
 .login-html .input,
 .login-html .button {
-    width: 100%;
-    color: #fff;
-    display: block;
+  width: 100%;
+  color: #fff;
+  display: block;
 }
 
 .login-html .input,
 .login-html .button {
-    border: none;
-    padding: 15px 20px;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 15px 20px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .login-html .label {
-    color: #aaa;
-    font-size: 12px;
+  color: #aaa;
+  font-size: 12px;
 }
 
 .login-html .button {
-    background: #1161ee;
+  background: #1161ee;
 }
 
 .hr {
-    height: 2px;
-    margin: 60px 0 50px 0;
-    background: rgba(255, 255, 255, 0.2);
+  height: 2px;
+  margin: 60px 0 50px 0;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .foot-lnk {
-    text-align: center;
+  text-align: center;
+}
+
+/* Hide scrollbar for Firefox */
+.login-wrap {
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
