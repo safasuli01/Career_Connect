@@ -5,7 +5,7 @@ from .models import User, Profile
 # Admin for User Model
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email', 'get_user_type', 'get_verified']
-    list_filter = ['profile__user_type', 'profile__verified']
+    # list_filter = ['profile__user_type', 'profile__verified']
     search_fields = ['username', 'email']
 
     def get_user_type(self, obj):
