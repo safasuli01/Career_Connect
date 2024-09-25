@@ -1,38 +1,43 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from rest_framework.response import Response
+from .models import User, Profile
+from .serializers import MyTokenObtainPairSerializer, RegisterSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
-from  .serializers import UserSerializers, PostSerializers
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Post
-
-# Create your views here.
-class PostListCreate(generics.ListCreateAPIView):
-    serializer_class = PostSerializers
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Post.objects.all()
-
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)
-        else:
-            print(serializer.errors)
-
-class PostDelete(generics.DestroyAPIView):
-    serializer_class = PostSerializers
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user  # Get the current logged-in user
-        return Post.objects.filter(author=user)
+from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 
 
-class CreateUserView(generics.CreateAPIView):
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializers
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
 
 
 
+class IsVerifiedCompany(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.user_type == 'company' and request.user.is_verified
+
+@api_view(['GET'])
+@permission_classes([IsVerifiedCompany])
+def company_dashboard(request):
+    return Response({'message': 'Welcome to the company dashboard!'}, status=200)
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def dashboard(request):
+    if request.method == 'GET':
+        context = f"Hey {request.user}, you are seeing a GET request"
+        return Response({'response': context}, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        context = "Hello Post"
+        return Response({'response': context}, status=status.HTTP_200_OK)
+
+    return Response({}, status=status.HTTP_400_BAD_REQUEST)

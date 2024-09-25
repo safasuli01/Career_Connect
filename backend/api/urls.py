@@ -1,8 +1,10 @@
 from django.urls import path
 from . import views
-
+from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
-    path('posts/', views.PostListCreate.as_view(), name='post-list'),
-    path('posts/delete/<int:pk>', views.PostDelete.as_view(), name='delete-post'),
+    path('token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),  # Custom token view
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Token refresh view
+    path('register/', views.RegisterView.as_view(), name='auth_register'),  # User registration
+    path('dashboard/', views.dashboard, name='dashboard'),  # Authenticated user dashboard
 ]
