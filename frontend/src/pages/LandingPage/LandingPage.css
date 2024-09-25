@@ -1,0 +1,54 @@
+/* src/pages/LandingPage.css */
+.hero {
+    background-image: url('../../../src/assets/dc6c84694a011f4e462ede16ab7d9a8e.jpg');
+    background-size: cover;
+    /* height: 100vh; */
+    background-position: center;
+    color: white;
+  }
+  
+  .footer {
+    background-color: #f8f9fa;
+  }
+  
+
+  
+  .filter-section .dropdown-menu a:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .filter-section .badge {
+    padding: 10px 15px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .filter-section .badge:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .filter-section .btn-outline-secondary:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+
+  /* CardSection.css */
+.card-section {
+    background-color: #f8f9fa; /* Light gray background for the whole section */
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    transition: 0.3s ease-in-out;
+  }
+
+
+
+
