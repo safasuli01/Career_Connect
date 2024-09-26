@@ -1,0 +1,73 @@
+/* Ensure the body takes full height and centers content */
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url(../../assets/hand2.jpg);
+    background-repeat: no-repeat;
+    background-color: #e9ecef; 
+    background-size: cover;
+    background-attachment: fixed ;
+    overflow: auto;
+    margin: 25%; 
+}
+
+.company-form-container {
+    min-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+  }
+  
+  .company-form header {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .input-field {
+    margin-bottom: 15px;
+  }
+  
+  .input-field label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .input-field input[type="text"],
+  .input-field input[type="email"],
+  .input-field input[type="password"],
+  .input-field input[type="file"],
+  .input-field input[type="date"],
+  .input-field input[type="number"],
+  .input-field select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .input-field .error {
+    color: red;
+    font-size: 14px;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .submit-btn:hover {
+    background-color: #45a049;
+  }
+  
