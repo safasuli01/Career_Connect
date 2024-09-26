@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Profile
+from .models import User, Profile, Post
 
 
 # Admin for User Model
@@ -33,13 +33,29 @@ admin.site.register(User, UserAdmin)
 
 # Admin for Profile Model
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'get_email', 'user_type']
+    list_display = ['user', 'get_email', 'user_type', 'client_based']
 
 
     def get_email(self, obj):
         return obj.user.email
-
     get_email.short_description = 'Email'
+
+    # Override get_form to conditionally display client_based field
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj and obj.user_type != 'company':
+            form.base_fields.pop('client_based', None)
+        return form
 
 
 admin.site.register(Profile, ProfileAdmin)
+
+# Admin for Post Model
+class PostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'post_type', 'author', 'location', 'job_type', 'industry', 'created_at']
+    list_filter = ['post_type', 'job_type', 'industry', 'created_at']
+    search_fields = ['title', 'description', 'location', 'author__username']
+
+    # Optionally add actions or custom methods for post management
+
+admin.site.register(Post, PostAdmin)
