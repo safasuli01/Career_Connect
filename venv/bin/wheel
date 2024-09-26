@@ -1,4 +1,4 @@
-#!/home/gehan/Desktop/graduation/Career_Connect/venv/bin/python3
+#!/home/gehan/Desktop/graduation/Career_Connect/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
