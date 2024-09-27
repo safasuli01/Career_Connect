@@ -9,13 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78d91c79-2ad1-49dc-94f5-20f4e9374b69" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/iti_final_project.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Career_Connect" beforeDir="false" afterPath="$PROJECT_DIR$/Career_Connect" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Career_Connect/backend/api/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/Career_Connect/backend/api/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Career_Connect/backend/api/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Career_Connect/backend/api/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Career_Connect/backend/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Career_Connect/backend/api/serializers.py" afterDir="false" />
     </list>
 >>>>>>> cdf1ab69 (edit)
     <option name="SHOW_DIALOG" value="false" />
@@ -135,5 +133,16 @@
 >>>>>>> cdf1ab69 (edit)
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Career_Connect/backend/backend/urls.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
