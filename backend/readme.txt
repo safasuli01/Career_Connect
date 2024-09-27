@@ -22,9 +22,12 @@ GRANT ALL PRIVILEGES ON SCHEMA public TO graduation_proj;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO graduation_proj;
 
 # Migrations:
-python3 manage.py makemigrations
+python3 manage.py makemigrations api
 python3 manage.py migrate
-python3 manage.py createsuperuser graduation_proj graduation_proj@gmail.com django@@
+python3 manage.py createsuperuser
+user:graduation_proj
+email:graduation_proj@gmail.com
+passwrod:django@@1
 
 # Run server:
 python3 manage.py runserver
