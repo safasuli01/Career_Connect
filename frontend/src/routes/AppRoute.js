@@ -5,6 +5,8 @@ import Register from '../pages/Register/Register';
 import ClientForm from '../pages/Register/ClientForm';
 import CompanyForm from '../pages/Register/CompanyForm';
 import LandingPage from '../pages/LandingPage/LandingPage.jsx';
+import Profile from '../pages/Profile/Profile.jsx';
+import JobList from '../pages/JobList/JobList.jsx';
 
 
 
