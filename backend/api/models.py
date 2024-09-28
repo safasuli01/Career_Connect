@@ -87,3 +87,23 @@ class Post(models.Model):
             self.job_type = None  # Job type should be cleared if it's a project post
             self.industry = None  # Industry should be cleared if it's a project post
         super().save(*args, **kwargs)
+
+#Application Model:
+class Application(models.Model):    
+    STATUS_CHOICES = [
+        ('applied', 'Applied'),
+        ('under_review','Under Review'),
+        ('accepted','Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='applications')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
+    cover_letter = models.TextField(blank=True, null=True)
+    applied_at = models.DateTimeField(auto_now_add=True)
+    
+    
+    def __str__(self):
+        return f"{self.applicant.username} - {self.post.title} ({self.status}) "
+    

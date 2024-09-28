@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import User, Profile, Post
-
+####
+from .models import Application
 
 # Admin for User Model
 class UserAdmin(admin.ModelAdmin):
@@ -59,3 +60,11 @@ class PostAdmin(admin.ModelAdmin):
     # Optionally add actions or custom methods for post management
 
 admin.site.register(Post, PostAdmin)
+
+# Application Admin:
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ['applicant', 'post', 'status', 'applied_at']
+    list_filter = ['status', 'applied_at']
+    search_fields = ['applicant__username', 'post__title']
+
+admin.site.register(Application, ApplicationAdmin)

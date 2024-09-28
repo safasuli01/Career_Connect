@@ -3,7 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-
+###
+from .models import Post, Application
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,3 +82,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+#ApplicationSerializer
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['id', 'applicant', 'post', 'status', 'resume', 'cover_letter', 'applied_at']
+        read_only_fields = ['applicant', 'applied_at']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        application = Application.objects.create(applicant=user, **validated_data)
+        return application
