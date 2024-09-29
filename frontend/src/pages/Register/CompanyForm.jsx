@@ -1,407 +1,215 @@
 import React, { useState } from 'react';
-import './CompanyForm.css';
+import './CompanyForm.css'; // Import the CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faEnvelope, faLock, faIdCard, faImage, faPhone, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding, faMapMarkerAlt, faFileAlt, faPhone, faIndustry, faImage } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
-const CompanyForm = () => {
+function CompanyForm() {
   const [formData, setFormData] = useState({
     companyName: '',
     street: '',
     city: '',
-    email: '',
     registrationNumber: '',
+    registrationDocument: null,
     phone: '',
     logo: null,
-    registrationDocument: null,
-    accountType: '',       // Keeping the original account type field
     industry: '',
-    paymentInfo: {
-      cardNumber: '',
-      cardHolder: '',
-      expiryDate: '',
-      cvv: '',
-    },
-    password: '',           // New field for password
-    repeatPassword: '',     // New field for repeated password
+    companyType:'',
   });
 
   const [formErrors, setFormErrors] = useState({});
 
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle file changes
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+  };
+
+  // Validation logic
   const validateForm = () => {
     const errors = {};
 
-    // Validation Logic
-    if (!formData.companyName) errors.companyName = "Company Name is required";
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Valid email is required";
-    }
+    if (!formData.companyName) errors.companyName = "Company name is required";
     if (!formData.street) errors.street = "Street address is required";
     if (!formData.city) errors.city = "City is required";
-    if (!formData.registrationNumber) errors.registrationNumber = "Registration Number is required";
-    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
-      errors.phone = "Phone number must be exactly 10 digits";
+    if (!formData.registrationNumber) errors.registrationNumber = "Registration number is required";
+    if (!formData.registrationDocument) errors.registrationDocument = "Registration document is required";
+    if (formData.registrationDocument && formData.registrationDocument.type !== 'application/pdf') {
+      errors.registrationDocument = "Registration document must be a PDF file";
     }
-    if (!formData.logo) errors.logo = "Company logo is required";
-    if (!formData.registrationDocument) errors.registrationDocument = "Registration Document is required";
-
-    // Password validation
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, 1 letter, 1 number
-    if (!formData.password) {
-      errors.password = "Password is required";
-    } else if (!passwordRegex.test(formData.password)) {
-      errors.password = "Password must be at least 8 characters long and contain at least 1 letter and 1 number";
+    if (!formData.phone || !/^[0-9]+$/.test(formData.phone)) {
+      errors.phone = "Valid phone number is required";
     }
-    if (formData.repeatPassword !== formData.password) {
-      errors.repeatPassword = "Passwords do not match";
-    }
-
-    // Industry validation
-    if (formData.accountType === 'hiring' && !formData.industry) {
-      errors.industry = "Industry is required for hiring companies";
-    }
-
-    // Payment Validation
-    if (formData.accountType === 'hiring') {
-      if (!formData.paymentInfo.cardNumber) {
-        errors.cardNumber = "Card number is required";
-      } else if (!/^[0-9]{16}$/.test(formData.paymentInfo.cardNumber)) {
-        errors.cardNumber = "Card number must be exactly 16 numbers";
-      }
-
-      if (!formData.paymentInfo.cardHolder) {
-        errors.cardHolder = "Cardholder name is required";
-      } else if (!/^[A-Za-z\s]+$/.test(formData.paymentInfo.cardHolder)) {
-        errors.cardHolder = "Cardholder name must contain letters only";
-      }
-
-      if (!formData.paymentInfo.expiryDate) {
-        errors.expiryDate = "Expiry date is required";
-      } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.paymentInfo.expiryDate)) {
-        errors.expiryDate = "Expiry date must be in MM/YY format";
-      }
-
-      if (!formData.paymentInfo.cvv) {
-        errors.cvv = "CVV is required";
-      } else if (!/^\d{3}$/.test(formData.paymentInfo.cvv)) {
-        errors.cvv = "CVV must be exactly 3 numbers";
-      }
-    }
-
+    if (!formData.industry) errors.industry = "Industry is required";
+    if (!formData.companyType) errors.companyType = "Company type is required"; // Added validation for companyType
+    
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
+  // Handling form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted successfully!", formData);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    // Handle nested state for payment info
-    if (name.startsWith('paymentInfo.')) {
-      const paymentField = name.split('.')[1];
-      setFormData({ 
-        ...formData, 
-        paymentInfo: { 
-          ...formData.paymentInfo, 
-          [paymentField]: value 
-        } 
-      });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const { name } = e.target;
-    if (name === 'logo') {
-      setFormData({ ...formData, logo: e.target.files[0] });
-    } else if (name === 'registrationDocument') {
-      setFormData({ ...formData, registrationDocument: e.target.files[0] });
+      // You can add further form submission logic here
     }
   };
 
   return (
-    <div className="company-form-container">  
-      <header>Company Registration</header>
+    <div className="company-form-container">
       <form className="company-form" onSubmit={handleSubmit}>
-        
-        {/* Company Info Section */}
-        <h3>Company Info</h3>
-        
+        <header>Company Registration</header>
+
+        {/* Company Name */}
         <div className="input-field">
-          <label htmlFor="companyName">
+          <label>
             <FontAwesomeIcon icon={faBuilding} /> Company Name
           </label>
-          <input
-            id="companyName"
-            type="text"
-            name="companyName"
-            value={formData.companyName}
-            onChange={handleInputChange}
-            placeholder='Enter company name'
-            required
+          <input 
+            type="text" 
+            name="companyName" 
+            value={formData.companyName} 
+            onChange={handleInputChange} 
+            className="form-control"
           />
           {formErrors.companyName && <p className="error">{formErrors.companyName}</p>}
         </div>
 
+        {/* Street Address */}
         <div className="input-field">
-          <label htmlFor="street">
-            <FontAwesomeIcon icon={faMapMarkedAlt} /> Street
+          <label>
+            <FontAwesomeIcon icon={faMapMarkerAlt} /> Street
           </label>
-          <input
-            id="street"
-            type="text"
-            name="street"
-            value={formData.street}
-            onChange={handleInputChange}
-            placeholder='Enter street address'
-            required
+          <input 
+            type="text" 
+            name="street" 
+            value={formData.street} 
+            onChange={handleInputChange} 
+            className="form-control"
           />
           {formErrors.street && <p className="error">{formErrors.street}</p>}
         </div>
 
+        {/* City */}
         <div className="input-field">
-          <label htmlFor="city">
-            <FontAwesomeIcon icon={faMapMarkedAlt} /> City
+          <label>
+            <FontAwesomeIcon icon={faMapMarkerAlt} /> City
           </label>
-          <input
-            id="city"
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-            placeholder='Enter city'
-            required
+          <input 
+            type="text" 
+            name="city" 
+            value={formData.city} 
+            onChange={handleInputChange} 
+            className="form-control"
           />
           {formErrors.city && <p className="error">{formErrors.city}</p>}
         </div>
 
+        {/* Registration Number */}
         <div className="input-field">
-          <label htmlFor="email">
-            <FontAwesomeIcon icon={faEnvelope} /> Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder='Enter your email'
-            required
-          />
-          {formErrors.email && <p className="error">{formErrors.email}</p>}
-        </div>
-
-        {/* Password Section */}
-        <div className="input-field">
-          <label htmlFor="password">
-            <FontAwesomeIcon icon={faLock} /> Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder='Enter your password'
-            required
-          />
-          {formErrors.password && <p className="error">{formErrors.password}</p>}
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="repeatPassword">
-            <FontAwesomeIcon icon={faLock} /> Repeat Password
-          </label>
-          <input
-            id="repeatPassword"
-            type="password"
-            name="repeatPassword"
-            value={formData.repeatPassword}
-            onChange={handleInputChange}
-            placeholder='Repeat your password'
-            required
-          />
-          {formErrors.repeatPassword && <p className="error">{formErrors.repeatPassword}</p>}
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="registrationNumber">
-            <FontAwesomeIcon icon={faIdCard} /> Registration No.
-          </label>
-          <input
-            id="registrationNumber"
-            type="text"
-            name="registrationNumber"
-            value={formData.registrationNumber}
-            onChange={handleInputChange}
-            placeholder='Enter Registration No.'
-            required
+          <label>Registration Number</label>
+          <input 
+            type="text" 
+            name="registrationNumber" 
+            value={formData.registrationNumber} 
+            onChange={handleInputChange} 
+            className="form-control"
           />
           {formErrors.registrationNumber && <p className="error">{formErrors.registrationNumber}</p>}
         </div>
 
+        {/* Registration Document */}
         <div className="input-field">
-          <label htmlFor="phone">
-            <FontAwesomeIcon icon={faPhone} /> Phone Number
+          <label>
+            <FontAwesomeIcon icon={faFileAlt} /> Registration Document (PDF)
           </label>
-          <input
-            id="phone"
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            placeholder='Enter phone number'
-            required
-          />
-          {formErrors.phone && <p className="error">{formErrors.phone}</p>}
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="logo">
-            <FontAwesomeIcon icon={faImage} /> Company Logo
-          </label>
-          <input
-            id="logo"
-            type="file"
-            name="logo"
-            onChange={handleFileChange}
-            accept="image/*"
-            required
-          />
-          {formErrors.logo && <p className="error">{formErrors.logo}</p>}
-        </div>
-
-        <div className="input-field">
-          <label htmlFor="registrationDocument">
-            <FontAwesomeIcon icon={faImage} /> Registration Document
-          </label>
-          <input
-            id="registrationDocument"
-            type="file"
-            name="registrationDocument"
-            onChange={handleFileChange}
-            accept=".pdf"
-            required
+          <input 
+            type="file" 
+            name="registrationDocument" 
+            onChange={handleFileChange} 
+            className="form-control"
           />
           {formErrors.registrationDocument && <p className="error">{formErrors.registrationDocument}</p>}
         </div>
 
-        {/* Account Type Section */}
-        <h3>Account Type</h3>
+        {/* Phone */}
         <div className="input-field">
-          <label> Account Type </label>
-          <select
-            name='accountType'
-            value={formData.accountType}
-            onChange={handleInputChange}
-            required
-          >
-            <option disabled value="" selected> Select Type</option>
-            <option value="hiring">Hiring Company </option>
-            <option value="client-based"> Client-Based Company </option>
-          </select>
+          <label>
+            <FontAwesomeIcon icon={faPhone} /> Phone
+          </label>
+          <input 
+            type="text" 
+            name="phone" 
+            value={formData.phone} 
+            onChange={handleInputChange} 
+            className="form-control"
+          />
+          {formErrors.phone && <p className="error">{formErrors.phone}</p>}
         </div>
 
-        {/* Industry Section */}
-        {formData.accountType === 'hiring' && (
-          <div className="input-field">
-            <label htmlFor="industry">
-              Industry
-            </label>
-            <input
-              id="industry"
-              type="text"
-              name="industry"
-              value={formData.industry}
-              onChange={handleInputChange}
-              placeholder='Enter industry'
-              required
+        {/* Logo */}
+        <div className="input-field">
+          <label>
+            <FontAwesomeIcon icon={faImage} /> Logo
+          </label>
+          <input 
+            type="file" 
+            name="logo" 
+            onChange={handleFileChange} 
+            className="form-control"
+          />
+        </div>
+
+        {/* Industry */}
+        <div className="input-field">
+          <label>
+            <FontAwesomeIcon icon={faIndustry} /> Industry
+          </label>
+          <input 
+            type="text" 
+            name="industry" 
+            value={formData.industry} 
+            onChange={handleInputChange} 
+            className="form-control"
+          />
+          {formErrors.industry && <p className="error">{formErrors.industry}</p>}
+        </div>
+
+        {/* Company Type */}
+        <div className="input-field">
+          <label>Company Type</label>
+          <div className="form-check form-check-inline">
+            <input 
+              type="radio" 
+              name="companyType" 
+              value="hiring"
+              onChange={handleInputChange} 
+              className="form-check-input"
             />
-            {formErrors.industry && <p className="error">{formErrors.industry}</p>}
+            <label className="form-check-label">Hiring Company</label>
           </div>
-        )}
 
-        {/* Payment Information Section */}
-        {formData.accountType === 'hiring' && (
-          <>
-            <h3>Payment Information</h3>
+          <div className="form-check form-check-inline">
+            <input 
+              type="radio" 
+              name="companyType" 
+              value="client-based"
+              onChange={handleInputChange} 
+              className="form-check-input"
+            />
+            <label className="form-check-label">Client-based Company</label>
+          </div>
+        </div>
 
-            <div className="input-field">
-              <label htmlFor="cardNumber">
-                Card Number
-              </label>
-              <input
-                id="cardNumber"
-                type="text"
-                name="paymentInfo.cardNumber"
-                value={formData.paymentInfo.cardNumber}
-                onChange={handleInputChange}
-                placeholder='Enter 16-digit card number'
-                required
-              />
-              {formErrors.cardNumber && <p className="error">{formErrors.cardNumber}</p>}
-            </div>
-
-            <div className="input-field">
-              <label htmlFor="cardHolder">
-                Cardholder Name
-              </label>
-              <input
-                id="cardHolder"
-                type="text"
-                name="paymentInfo.cardHolder"
-                value={formData.paymentInfo.cardHolder}
-                onChange={handleInputChange}
-                placeholder='Enter cardholder name'
-                required
-              />
-              {formErrors.cardHolder && <p className="error">{formErrors.cardHolder}</p>}
-            </div>
-
-            <div className="input-field">
-              <label htmlFor="expiryDate">
-                Expiry Date
-              </label>
-              <input
-                id="expiryDate"
-                type="text"
-                name="paymentInfo.expiryDate"
-                value={formData.paymentInfo.expiryDate}
-                onChange={handleInputChange}
-                placeholder='MM/YY'
-                required
-              />
-              {formErrors.expiryDate && <p className="error">{formErrors.expiryDate}</p>}
-            </div>
-
-            <div className="input-field">
-              <label htmlFor="cvv">
-                CVV
-              </label>
-              <input
-                id="cvv"
-                type="text"
-                name="paymentInfo.cvv"
-                value={formData.paymentInfo.cvv}
-                onChange={handleInputChange}
-                placeholder='Enter 3-digit CVV'
-                required
-              />
-              {formErrors.cvv && <p className="error">{formErrors.cvv}</p>}
-            </div>
-          </>
-        )}
-
-        <button type="submit" className="submit-btn">Register</button>
+        <button type="submit" className="submit-btn">Register Company</button>
       </form>
     </div>
   );
-};
+}
 
 export default CompanyForm;

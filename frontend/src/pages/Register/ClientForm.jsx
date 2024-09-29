@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ClientForm.css'; // Import the CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faLock, faPhone, faCalendarAlt, faFileAlt, faHome, faBriefcase } from '@fortawesome/free-solid-svg-icons'; // Import icons
+import { faUser, faEnvelope, faLock, faPhone, faCalendarAlt, faFileAlt, faHome, faBriefcase, faImage } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
 function ClientForm() {
   const [formData, setFormData] = useState({
@@ -42,6 +42,7 @@ function ClientForm() {
     if (!formData.phoneNumber || !/^[0-9]+$/.test(formData.phoneNumber)) {
       errors.phoneNumber = "Valid phone number is required";
     }
+    if (!formData.profileImage) errors.profileImage = "Profile image is required";
     if (!formData.dateOfBirth) errors.dateOfBirth = "Date of Birth is required";
     if (!formData.cvFile) errors.cvFile = "CV is required (PDF only)";
     if (formData.cvFile && formData.cvFile.type !== 'application/pdf') {
@@ -65,6 +66,9 @@ function ClientForm() {
       console.log("Form submitted successfully!", formData);
       // You can add further form submission logic here
     }
+  };
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, profileImage: e.target.files[0] });
   };
 
   return (
@@ -156,6 +160,24 @@ function ClientForm() {
           />
           {formErrors.email && <p className="error">{formErrors.email}</p>}
         </div>
+        
+        {/*Profile Image*/}
+        <div className="input-field">
+          <label htmlFor="profileImage">
+            <FontAwesomeIcon icon={faImage} /> Profile Image
+          </label>
+          <input
+            id="profileImage"
+            type="file"
+            name="profileImage"
+            onChange={handleImageChange}
+            className='form-control'
+            accept="image/jpeg, image/png, image/webp"
+            required
+          />
+          {formErrors.profileImage && <p className="error">{formErrors.profileImage}</p>}
+        </div>
+
 
         {/* Address */}
         <div className="input-field">
