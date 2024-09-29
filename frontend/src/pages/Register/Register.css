@@ -1,4 +1,4 @@
-/* Register.css */
+Register.css
 
 /* Ensure the body takes full height and centers content */
 body {
@@ -6,15 +6,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0; /* Remove default margin */
+    margin: auto; 
 }
 
 /* Make the container wider */
 .register-container {
     min-height: 700px;
-    min-width: 1400px;  /* Increased from 900px to 800px */
+    min-width: 1400px;  
     width: 100%;
-    padding: 40px;
+    padding: 0px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
@@ -46,12 +46,13 @@ header::before {
     
     display: flex;
     justify-content: space-between;
-    margin-top: 15%;
+    margin: 5% auto;
+
 
 }
 
 /* Card styling */
-.card {
+.cardd {
     width: 45%;
     background-color: #f7f7f7;
     border-radius: 10px;
@@ -62,17 +63,17 @@ header::before {
     color: black;
 }
 
-.card:hover {
+.cardd:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-content h3 {
+.cardd-content h3 {
     font-size: 22px;
     margin-bottom: 10px;
 }
 
-.card-content p {
+.cardd-content p {
     font-size: 16px;
     color: #666;
 }

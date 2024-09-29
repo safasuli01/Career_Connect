@@ -2,9 +2,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./LandingPage.css"; 
-import image1 from '/home/helana/Desktop/iti_final_project/Career_Connect/frontend/src/assets/culture/feature-image-careers-wrike-engineering-2x.avif'; 
-import image2 from '/home/helana/Desktop/iti_final_project/Career_Connect/frontend/src/assets/culture/promo-image-jobs-wrike-techclub.avif';
-import image3 from '/home/helana/Desktop/iti_final_project/Career_Connect/frontend/src/assets/culture/feature-image-feature-static-techclub-careers-diversity-condenced-2x.avif';
+import image1 from '../../assets/culture/1.avif'; 
+import image2 from  '../../assets/culture/2.avif';
+import image3 from  '../../assets/culture/3.avif';
 
 
 
@@ -12,43 +12,7 @@ const LandingPage = () => {
   return (
     <div>
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">Carrer Connect</Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    {/* <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li> */}
-                </ul>
-    
-            </div>
-
-
-
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link active" to="/login">Login</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">Register</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
+      
       {/* Hero Section */}
       <section className="hero bg-primary text-white text-center py-5">
         <div className="container ">

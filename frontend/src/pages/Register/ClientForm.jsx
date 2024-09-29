@@ -72,7 +72,7 @@ function ClientForm() {
   };
 
   return (
-    <div className="client-form-container">
+    <div className="client-form-container w-50">
       <form className="client-form" onSubmit={handleSubmit}>
         <header>Individuals Form</header>
 

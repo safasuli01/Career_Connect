@@ -61,8 +61,8 @@ function CompanyForm() {
   };
 
   return (
-    <div className="company-form-container">
-      <form className="company-form" onSubmit={handleSubmit}>
+    <div className="company-form-container w-50">
+      <form className="company-form " onSubmit={handleSubmit}>
         <header>Company Registration</header>
 
         {/* Company Name */}

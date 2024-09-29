@@ -1,78 +1,201 @@
-import React from "react";
-import { FaLinkedin, FaTwitter, FaGlobe } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./Profile.css"; 
-import image1 from "../../assets/content/7";
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Profile.css';
+import img1 from "../../assets/images/1.jpg";
 
-const Profile = () => {
+
+function Profile() {
   return (
-    <div className="profile-container">
-      <div className="profile-header bg-dark text-white py-4">
-        <div className="container d-flex align-items-center justify-content-between">
-          <div className="d-flex align-items-center">
-          <img src={image1} alt=" profile" className="profile-image rounded-circle mr-4"
- />
-            <div>
-              <h1>Fares Farhan</h1>
-              <p className="text-light">Design Director at Elevenia Digital</p>
+    <div className="container mt-5">
+      <div className="row">
+        {/* Left Sidebar - Profile Info */}
+        <div className="col-lg-4 ">
+          <div className="card profile-sidebar shadow-sm mb-4">
+            <div className="card-body text-center">
+              <img
+                src={img1} // Replace with profile image URL
+                alt="Profile"
+                className="profile-image rounded-circle mb-3"
+              />
+              <h4 className="mb-0">Ananya Grover</h4>
+              <p className="text-muted">UI/UX Designer</p>
+              <p className="text-muted">
+                Full stack product designer with hands-on experience in solving problems for clients ranging from Real Estate, Hospitality, and more.
+              </p>
+              <div className="skills mb-3">
+                <span className="badge bg-primary">UI Design</span>
+                <span className="badge bg-primary">UX</span>
+                <span className="badge bg-primary">Adobe XD</span>
+                <span className="badge bg-primary">Mobile Apps</span>
+              </div>
+              <div className="form-group">
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="Add notes for future reference"
+                ></textarea>
+                <button className="btn btn-primary mt-3">Add Note</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="profile-body bg-light py-5">
-        <div className="container">
-          <h2 className="mb-4">Overview</h2>
-          <p className="text-muted">
-            I have about 18+ years of experience in website and web-based
-            application design and development. 12+ years of experience in
-            mobile app UI and I/X design. Most of my past works are mainly UI
-            Design, Interaction Design, although within...
-          </p>
-          <div className="social-icons mt-3">
-            <FaLinkedin className="icon" />
-            <FaTwitter className="icon" />
-            <FaGlobe className="icon" />
+        {/* Right Sidebar - Basic Information */}
+        <div className="col-lg-8">
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6>Basic Information</h6>
+             
+              </div>
+              <div className="row strong">
+                <div className="col-md-4">
+                  <strong>Age: <br></br></strong> 28 years
+                </div>
+                <div className="col-md-4">
+                  <strong>Location: <br></br></strong> Ahmedabad, Gujarat
+                </div>
+                <div className="col-md-4">
+                  <strong>Phone: <br></br></strong> +91 98123 55679
+                </div>
+                <div className="col-md-4">
+                  <strong>Experience: <br></br></strong> 6 years
+                </div>
+                
+                <div className="col-md-5">
+                  <strong>Email: <br></br></strong> ananyasharma@gmail.com
+                </div>
+              </div>
+
+                 <div>
+                  <button className="btn btn-outline-primary mt-2">
+                    <FontAwesomeIcon icon={faDownload} /> Download Resume
+                  </button>
+               
+                </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="profile-footer bg-white py-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4 mb-4">
-              <h5>Profile Insights</h5>
-              <div className="card p-3 shadow-sm mb-3 bg-info text-white">
-                <h6>Perfect Presence</h6>
-                <p>Mentor is prompt and highly responsive.</p>
+          {/* Experience Section */}
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <h5 className="font-weight-bold">Experience</h5>
+              <div className="experience-item d-flex align-items-center mb-3">
+                <div className="experience-icon bg-primary text-white rounded-circle me-3">
+                </div>
+                <div>
+                  <h6 className="mb-0">Pixel Studio</h6>
+                  <small>UI/UX Designer | Oct 2016 - July 2016 | Bengaluru, India</small>
+                </div>
+              </div>       
+                       <hr></hr>
+
+              <div className="experience-item d-flex align-items-center mb-3">
+                <div className="experience-icon bg-warning text-white rounded-circle me-3">
+                </div>
+                <div>
+                  <h6 className="mb-0">Ramotion Studio</h6>
+                  <small>Web Designer | April 2015 - July 2016 | Bengaluru, India</small>
+                </div>
               </div>
-              <div className="card p-3 shadow-sm bg-success text-white">
-                <h6>Top Achiever: Director</h6>
-                <p>Mentor is amongst the top 10% of contributors in their field!</p>
+            </div>
+          </div>
+
+          {/* Accordion for Education, Accomplishments, and Certifications */}
+          <div className="accordion mt-4" id="profileAccordion">
+            {/* Education Accordion */}
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="headingOne">
+                <button
+                  className="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+                  aria-expanded="true"
+                  aria-controls="collapseOne"
+                >
+                  Education
+                </button>
+              </h2>
+              <div
+                id="collapseOne"
+                className="accordion-collapse collapse show"
+                aria-labelledby="headingOne"
+                data-bs-parent="#profileAccordion"
+              >
+                <div className="accordion-body">
+                  <ul>
+                    <li>Bachelor of Design, National Institute of Design, 2014 - 2018</li>
+                    <li>Diploma in UI/UX, ABC Institute, 2013 - 2014</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
-            <div className="col-md-4 mb-4">
-              <h5>Community Statistics</h5>
-              <p>Total mentoring time: 1,350 mins</p>
-              <p>Sessions completed: 34</p>
+            {/* Accomplishments Accordion */}
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="headingTwo">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo"
+                  aria-expanded="false"
+                  aria-controls="collapseTwo"
+                >
+                  Accomplishments
+                </button>
+              </h2>
+              <div
+                id="collapseTwo"
+                className="accordion-collapse collapse"
+                aria-labelledby="headingTwo"
+                data-bs-parent="#profileAccordion"
+              >
+                <div className="accordion-body">
+                  <ul>
+                    <li>Winner of the XYZ Design Award 2022</li>
+                    <li>Published article on UX design in a renowned journal</li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
-            <div className="col-md-4">
-              <p>Timezone: Asia/Bangkok</p>
-              <div>
-                <button className="btn btn-outline-primary mr-2">8:00 PM</button>
-                <button className="btn btn-outline-primary">9:00 PM</button>
+            {/* Certifications Accordion */}
+            <div className="accordion-item">
+              <h2 className="accordion-header" id="headingThree">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseThree"
+                  aria-expanded="false"
+                  aria-controls="collapseThree"
+                >
+                  Certifications
+                </button>
+              </h2>
+              <div
+                id="collapseThree"
+                className="accordion-collapse collapse"
+                aria-labelledby="headingThree"
+                data-bs-parent="#profileAccordion"
+              >
+                <div className="accordion-body">
+                  <ul>
+                    <li>Certified UX Designer - UX Design Institute</li>
+                    <li>Adobe Certified Expert (ACE) in Photoshop</li>
+                  </ul>
+                </div>
               </div>
-              <button className="btn btn-primary mt-3">
-                Book Session for 02 May 2023
-              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Profile;

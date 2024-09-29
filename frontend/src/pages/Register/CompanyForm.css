@@ -1,4 +1,4 @@
-/* Ensure the body takes full height and centers content */
+Ensure the body takes full height and centers content
 body {
     min-height: 100vh;
     display: flex;
@@ -14,7 +14,7 @@ body {
 }
 
 .company-form-container {
-    min-width: 1200px;
+    /* min-width: 900px; */
     margin: 0 auto;
     padding: 20px;
     background-color: #f4f4f4;

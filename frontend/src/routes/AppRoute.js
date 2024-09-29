@@ -4,9 +4,13 @@ import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
 import ClientForm from '../pages/Register/ClientForm';
 import CompanyForm from '../pages/Register/CompanyForm';
-// import LandingPage from '../pages/LandingPage/LandingPage.jsx';
-// import Profile from '../pages/Profile/Profile.jsx';
-// import JobList from '../pages/JobList/JobList.jsx';
+import LandingPage from '../pages/LandingPage/LandingPage.jsx';
+import Profile from '../pages/Profile/Profile.jsx';
+import JobList from '../pages/JobList/JobList.jsx';
+import JobDetails from '../pages/JobDetails/JobDetails.jsx';
+import Company from '../pages/CompanyProfile/CompanyProfile.jsx';
+import AppNavbar from '../components/Navbar.jsx'; 
+import Footer from '../components/Footer.jsx';  
 
 
 
@@ -16,13 +20,20 @@ function AppRoutes() {
   return (
     
     <Router>
-      <Routes>
-        {/* <Route path="/" element={<LandingPage />} />  */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/register/client" element={<ClientForm />} />
-        <Route path="/register/company" element={<CompanyForm/>} />
-      </Routes>
+      <AppNavbar /> 
+          <Routes>
+            <Route path="/" element={<LandingPage />} /> 
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/register/client" element={<ClientForm />} />
+            <Route path="/register/company" element={<CompanyForm/>} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/company" element={<Company />} />  
+            <Route path="/jobs" element={<JobList />} />
+            <Route path="jobs/jobdetails" element={<JobDetails />} />
+          </Routes>
+      <Footer /> 
+
     </Router>
   );
 }
