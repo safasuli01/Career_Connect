@@ -11,7 +11,7 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 
 # Database (PostgreSQL):
-su - postgres
+sudo su - postgres
 psql
 CREATE USER graduation_proj WITH PASSWORD 'django@@1';
 CREATE DATABASE career_connect;
