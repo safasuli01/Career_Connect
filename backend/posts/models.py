@@ -9,8 +9,7 @@ class Post(models.Model):
     ]
     STATUS = (
         ("active", "Active"),
-        ("draft", "Draft"),
-        ("disabled", "Disabled"),
+        ("expired", "Expired"),
     )
     title = models.CharField(max_length=200)
     description = models.TextField()
