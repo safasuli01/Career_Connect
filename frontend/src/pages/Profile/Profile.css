@@ -1,40 +1,47 @@
 /* Profile.css */
 body {
   font-size: smaller;
-  background-color: #f7f9fc; /* Light background color */
 }
 
 .profile-sidebar {
   background-color: #ffffff; /* White background for sidebar */
-  border-radius: 8px; /* Rounded corners */
+  border-radius: 8px;
+  border: 2px solid #2c9caf;
   height: 100lvh;
 }
 
 .profile-image {
   width: 150px;
   height: 150px;
-  object-fit: cover; /* Ensure image covers the circle */
-}
-
-.accordion-button {
-  background-color: #79b1ee; /* Primary color for accordion button */
-  color: white; /* White text */
-}
-
-.accordion-button:focus {
-  box-shadow: none; /* Remove focus outline */
-}
-
-.accordion-body ul {
-  list-style: none; /* Remove default list style */
-  padding-left: 0; /* Remove padding */
-}
-
-.accordion-body li {
-  padding: 5px 0; /* Add some spacing between list items */
+  object-fit: cover; 
 }
 
 
+.buttonn {
+  padding: 1em 2em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #2c9caf;
+  transition: all 0.1ms;
+  font-size: 18px;
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #2c9caf;
+}
+
+.button:hover {
+  color: #ffffff;
+  transform: scale(1.1);
+  outline: 2px solid #70bdca;
+  box-shadow: 4px 5px 17px -4px #268391;
+}
+
+
+.cards{
+  border: 2px solid #2c9caf;
+}
 
 .card.shadow-sm {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for cards */
@@ -43,4 +50,30 @@ body {
 
 .strong strong{
   font-size: 20px;
+}
+
+
+
+
+.accordion-button {
+  background-color: #2c9caf;
+  color: white;
+}
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-header{
+  width: 100%;
+
+}
+.accordion-body {
+  background-color: #f8f9fa;
+  width: 100%;
+}
+
+.accordion-item{
+
+  width: 100%;
+
 }

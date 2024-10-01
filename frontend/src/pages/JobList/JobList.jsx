@@ -81,7 +81,7 @@ function JobListComponent() {
           {/* Job List */}
           <div>
             {filteredJobs.map((job, index) => (
-              <div key={index} className="job-item p-3 mb-3 border rounded">
+              <div key={index} className="job-item ">
                 <h5>{job.title}</h5>
                 <p>
                   <strong>Location:</strong> {job.location}

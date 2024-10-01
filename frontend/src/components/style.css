@@ -1,16 +1,16 @@
 /* styles.css */
+/* colors 
+#2c9caf
+#00a8d0
+#e7fdff
+#e6f4f1 */
 
-.navbar {
-    background-color: #6c757d; /* Customize navbar color */
-  }
-  
-  .nav-link {
-    color: #fff !important;
-  }
+body{
+  background-color: #F8F9FA;
+}
   
   .footer {
     background-color: #f8f9fa;
-    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -22,3 +22,4 @@
     color: #6c757d;
   }
   
+

@@ -33,7 +33,7 @@ function AppRoutes() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/company" element={<Company />} />  
             <Route path="/jobs" element={<JobList />} />
-            <Route path="jobs/jobdetails" element={<JobDetails />} />
+            <Route path="jobdetails" element={<JobDetails />} />
             <Route path="/projects" element={<ProjectList />} />
 
           </Routes>

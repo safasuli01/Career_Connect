@@ -2,16 +2,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap'; // Rename Bootstrap's Navbar to avoid conflict
-import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap'; // Bootstrap components
+import { faHome, faUser, faBriefcase, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'; // Icons
+import "./style.css";
+import Logo from '../../src/assets/logo3.jpg';
 
 function AppNavbar() {
     return (
-      <BootstrapNavbar className="navbar navbar-expand-lg navbar-light bg-light">
+      <BootstrapNavbar className="navbar navbar-expand-lg" style={{ padding: ' 0' }}> {/* Reduce padding */}
         <Container>
-          <Link className="navbar-brand" to="/">
-          Carrer Connect
+          {/* Left Section: Logo */}
+          <Link className="navbar-brand d-flex align-items-center me-auto" to="/" style={{ fontWeight: 'bold', color: '#2c9caf' }}>
+            <img
+              src={Logo}
+              width="50"  // Reduce logo size
+              height="35" // Reduce logo size
+              className="d-inline-block align-top me-2"
+              alt="Career Connect Logo"
+            />
+            Career Connect
           </Link>
+          {/* Toggler for mobile */}
           <button
             className="navbar-toggler"
             type="button"
@@ -23,23 +34,37 @@ function AppNavbar() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <Nav className="me-auto mb-2 mb-lg-0">
+
+          {/* Right Section: Links and Login */}
+          <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <Nav className="mx-auto">
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/">
-                  <FontAwesomeIcon icon={faHome} /> Home
+                <Link className="nav-link" to="/" style={{ color: '#2c9caf', fontSize: '16px' }}> {/* Adjust font size */}
+                  <FontAwesomeIcon icon={faHome} className="me-1" /> Home
                 </Link>
               </Nav.Item>
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/profile">
-                  <FontAwesomeIcon icon={faUser} /> Profile
+                <Link className="nav-link" to="/about" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                  <FontAwesomeIcon icon={faUser} className="me-1" /> About
                 </Link>
               </Nav.Item>
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/jobs">
-                   Jobs
+                <Link className="nav-link" to="/jobs" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                  <FontAwesomeIcon icon={faBriefcase} className="me-1" /> Find Jobs
                 </Link>
               </Nav.Item>
+              <Nav.Item className="nav-item">
+                <Link className="nav-link" to="/projects" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                  <FontAwesomeIcon icon={faProjectDiagram} className="me-1" /> Projects
+                </Link>
+              </Nav.Item>
+            </Nav>
+
+            {/* Login Button */}
+            <Nav className="ms-auto">
+              <Link to="/login" style={{ textDecoration: 'none', color: '#2c9caf' }}>
+                Login
+              </Link>
             </Nav>
           </div>
         </Container>
