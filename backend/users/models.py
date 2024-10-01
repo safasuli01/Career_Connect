@@ -2,21 +2,43 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
-
+from django.contrib.auth.models import AbstractUser, Group, Permission
 # Create your models here.
+# class User(AbstractUser):
+#     email = models.EmailField(unique=True)
+#     first_name = models.CharField(max_length=250)
+#     last_name = models.CharField(max_length=250)
+#     # USERNAME_FIELD = 'email'
+#
+#     def __str__(self):
+#         return self.email
+#
+#     def save(self, *args, **kwargs):
+#         super(User, self).save(*args, **kwargs)
+
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
+
+    # Use unique related names to avoid clashes
+    groups = models.ManyToManyField(
+        Group,
+        related_name='custom_user_set',  # Change this to avoid conflicts
+        blank=True,
+        help_text="The groups this user belongs to."
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='custom_user_permissions_set',  # Change this to avoid conflicts
+        blank=True,
+        help_text="Specific permissions for this user."
+    )
+
     USERNAME_FIELD = 'email'
 
     def __str__(self):
         return self.email
-
-    def save(self, *args, **kwargs):
-        super(User, self).save(*args, **kwargs)
-
-
 
 # Phone number validation
 validate_phone_validator = RegexValidator(
