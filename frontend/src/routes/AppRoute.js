@@ -13,7 +13,7 @@ import JobDetails from '../pages/JobDetails/JobDetails.jsx';
 import Company from '../pages/CompanyProfile/CompanyProfile.jsx';
 import ProjectList from '../pages/ProjectList/ProjectList.jsx';
 import ProjectPost from '../pages/ProjectPost/Projectpost.jsx';
-// import JobPost from '../pages/JobPost/JobPost.jsx';
+import JobPost from '../pages/JobPost/JobPost.jsx';
 
 
 
@@ -40,7 +40,7 @@ function AppRoutes() {
             <Route path="jobdetails" element={<JobDetails />} />
             <Route path="/projects" element={<ProjectList />} />
             <Route path="/projectpost" element={<ProjectPost />} />
-            {/* <Route path="/jobpost" element={<JobPost />} /> */}
+            <Route path="/jobpost" element={<JobPost />} />
 
 
 
