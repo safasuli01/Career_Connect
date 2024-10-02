@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './ClientForm.css'; // Import the CSS file
+import './ClientForm.css'; // Import updated CSS
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faLock, faPhone, faCalendarAlt, faFileAlt, faHome, faBriefcase, faImage } from '@fortawesome/free-solid-svg-icons'; // Import icons
+import { faUser, faEnvelope, faLock, faPhone, faCalendarAlt, faFileAlt, faHome, faBriefcase, faImage } from '@fortawesome/free-solid-svg-icons';
 
 function ClientForm() {
   const [formData, setFormData] = useState({
@@ -15,7 +15,8 @@ function ClientForm() {
     cvFile: null,
     accountType: '',
     address: '',
-    specialization: ''
+    specialization: '',
+    profileImage: null,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -29,6 +30,11 @@ function ClientForm() {
   // Handle file changes
   const handleFileChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+  };
+
+  // Handle image changes
+  const handleImageChange = (e) => {
+    setFormData({ ...formData, profileImage: e.target.files[0] });
   };
 
   // Validation logic
@@ -67,17 +73,16 @@ function ClientForm() {
       // You can add further form submission logic here
     }
   };
-  const handleImageChange = (e) => {
-    setFormData({ ...formData, profileImage: e.target.files[0] });
-  };
 
   return (
-    <div className="client-form-container w-50">
-      <form className="client-form" onSubmit={handleSubmit}>
-        <header>Individuals Form</header>
+    <div className="new-project-form">
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-header">
+          <h2>Individuals Form</h2>
+        </div>
 
         {/* Full Name */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faUser} /> Full Name
           </label>
@@ -88,11 +93,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.fullName && <p className="error">{formErrors.fullName}</p>}
+          {formErrors.fullName && <small className="error form-text">{formErrors.fullName}</small>}
         </div>
 
         {/* Gender */}
-        <div className="input-field">
+        <div className="form-group">
           <label>Gender</label>
           <div className="form-check form-check-inline">
             <input 
@@ -117,7 +122,7 @@ function ClientForm() {
         </div>
 
         {/* Date of Birth */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faCalendarAlt} /> Date of Birth
           </label>
@@ -128,11 +133,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.dateOfBirth && <p className="error">{formErrors.dateOfBirth}</p>}
+          {formErrors.dateOfBirth && <small className="error form-text">{formErrors.dateOfBirth}</small>}
         </div>
 
         {/* Phone Number */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faPhone} /> Phone Number
           </label>
@@ -143,11 +148,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.phoneNumber && <p className="error">{formErrors.phoneNumber}</p>}
+          {formErrors.phoneNumber && <small className="error form-text">{formErrors.phoneNumber}</small>}
         </div>
 
         {/* Email */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faEnvelope} /> Email
           </label>
@@ -158,29 +163,27 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.email && <p className="error">{formErrors.email}</p>}
+          {formErrors.email && <small className="error form-text">{formErrors.email}</small>}
         </div>
         
-        {/*Profile Image*/}
-        <div className="input-field">
-          <label htmlFor="profileImage">
+        {/* Profile Image */}
+        <div className="form-group">
+          <label>
             <FontAwesomeIcon icon={faImage} /> Profile Image
           </label>
           <input
-            id="profileImage"
             type="file"
             name="profileImage"
             onChange={handleImageChange}
-            className='form-control'
+            className="form-control"
             accept="image/jpeg, image/png, image/webp"
             required
           />
-          {formErrors.profileImage && <p className="error">{formErrors.profileImage}</p>}
+          {formErrors.profileImage && <small className="error form-text">{formErrors.profileImage}</small>}
         </div>
 
-
         {/* Address */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faHome} /> Address
           </label>
@@ -191,11 +194,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.address && <p className="error">{formErrors.address}</p>}
+          {formErrors.address && <small className="error form-text">{formErrors.address}</small>}
         </div>
 
         {/* Specialization */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faBriefcase} /> Specialization
           </label>
@@ -206,11 +209,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.specialization && <p className="error">{formErrors.specialization}</p>}
+          {formErrors.specialization && <small className="error form-text">{formErrors.specialization}</small>}
         </div>
 
         {/* Password */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faLock} /> Password
           </label>
@@ -221,11 +224,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.password && <p className="error">{formErrors.password}</p>}
+          {formErrors.password && <small className="error form-text">{formErrors.password}</small>}
         </div>
 
         {/* Repeat Password */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faLock} /> Repeat Password
           </label>
@@ -236,11 +239,11 @@ function ClientForm() {
             onChange={handleInputChange} 
             className="form-control"
           />
-          {formErrors.repeatPassword && <p className="error">{formErrors.repeatPassword}</p>}
+          {formErrors.repeatPassword && <small className="error form-text">{formErrors.repeatPassword}</small>}
         </div>
 
         {/* CV Upload */}
-        <div className="input-field">
+        <div className="form-group">
           <label>
             <FontAwesomeIcon icon={faFileAlt} /> CV (PDF)
           </label>
@@ -250,11 +253,11 @@ function ClientForm() {
             onChange={handleFileChange} 
             className="form-control"
           />
-          {formErrors.cvFile && <p className="error">{formErrors.cvFile}</p>}
+          {formErrors.cvFile && <small className="error form-text">{formErrors.cvFile}</small>}
         </div>
 
         {/* Account Type */}
-        <div className="input-field">
+        <div className="form-group">
           <label>Account Type</label>
           <div className="form-check form-check-inline">
             <input 

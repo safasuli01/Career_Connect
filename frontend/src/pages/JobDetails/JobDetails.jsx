@@ -4,18 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faUsers, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
 const JobDetails = () => {
+
   return (
     <Container className="mt-5">
       <Row>
         <Col md={8}>
           <h5>Senior Software Engineer, Marketing</h5>
           <div className="d-flex align-items-center mb-3">
-            <Button variant="primary" className="me-2">
+            <Button variant="primary" className="me-2 w-25">
               Apply
             </Button>
           
-          
           </div>
+
+
 
           <h5>ABOUT ROCKET MONEY</h5>
           <p>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './CompanyForm.css'; // Import the CSS file
+import './CompanyForm.css'; // Import the updated CSS file
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBuilding, faMapMarkerAlt, faFileAlt, faPhone, faIndustry, faImage } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
@@ -13,7 +13,7 @@ function CompanyForm() {
     phone: '',
     logo: null,
     industry: '',
-    companyType:'',
+    companyType: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -46,7 +46,7 @@ function CompanyForm() {
     }
     if (!formData.industry) errors.industry = "Industry is required";
     if (!formData.companyType) errors.companyType = "Company type is required"; // Added validation for companyType
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -61,8 +61,8 @@ function CompanyForm() {
   };
 
   return (
-    <div className="company-form-container w-50">
-      <form className="company-form " onSubmit={handleSubmit}>
+    <div className="company-form-container">
+      <form className="company-form" onSubmit={handleSubmit}>
         <header>Company Registration</header>
 
         {/* Company Name */}
@@ -70,11 +70,11 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faBuilding} /> Company Name
           </label>
-          <input 
-            type="text" 
-            name="companyName" 
-            value={formData.companyName} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="companyName"
+            value={formData.companyName}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.companyName && <p className="error">{formErrors.companyName}</p>}
@@ -85,11 +85,11 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faMapMarkerAlt} /> Street
           </label>
-          <input 
-            type="text" 
-            name="street" 
-            value={formData.street} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="street"
+            value={formData.street}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.street && <p className="error">{formErrors.street}</p>}
@@ -100,11 +100,11 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faMapMarkerAlt} /> City
           </label>
-          <input 
-            type="text" 
-            name="city" 
-            value={formData.city} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.city && <p className="error">{formErrors.city}</p>}
@@ -113,11 +113,11 @@ function CompanyForm() {
         {/* Registration Number */}
         <div className="input-field">
           <label>Registration Number</label>
-          <input 
-            type="text" 
-            name="registrationNumber" 
-            value={formData.registrationNumber} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="registrationNumber"
+            value={formData.registrationNumber}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.registrationNumber && <p className="error">{formErrors.registrationNumber}</p>}
@@ -128,10 +128,10 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faFileAlt} /> Registration Document (PDF)
           </label>
-          <input 
-            type="file" 
-            name="registrationDocument" 
-            onChange={handleFileChange} 
+          <input
+            type="file"
+            name="registrationDocument"
+            onChange={handleFileChange}
             className="form-control"
           />
           {formErrors.registrationDocument && <p className="error">{formErrors.registrationDocument}</p>}
@@ -142,11 +142,11 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faPhone} /> Phone
           </label>
-          <input 
-            type="text" 
-            name="phone" 
-            value={formData.phone} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.phone && <p className="error">{formErrors.phone}</p>}
@@ -157,10 +157,10 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faImage} /> Logo
           </label>
-          <input 
-            type="file" 
-            name="logo" 
-            onChange={handleFileChange} 
+          <input
+            type="file"
+            name="logo"
+            onChange={handleFileChange}
             className="form-control"
           />
         </div>
@@ -170,11 +170,11 @@ function CompanyForm() {
           <label>
             <FontAwesomeIcon icon={faIndustry} /> Industry
           </label>
-          <input 
-            type="text" 
-            name="industry" 
-            value={formData.industry} 
-            onChange={handleInputChange} 
+          <input
+            type="text"
+            name="industry"
+            value={formData.industry}
+            onChange={handleInputChange}
             className="form-control"
           />
           {formErrors.industry && <p className="error">{formErrors.industry}</p>}
@@ -184,26 +184,27 @@ function CompanyForm() {
         <div className="input-field">
           <label>Company Type</label>
           <div className="form-check form-check-inline">
-            <input 
-              type="radio" 
-              name="companyType" 
+            <input
+              type="radio"
+              name="companyType"
               value="hiring"
-              onChange={handleInputChange} 
+              onChange={handleInputChange}
               className="form-check-input"
             />
             <label className="form-check-label">Hiring Company</label>
           </div>
 
           <div className="form-check form-check-inline">
-            <input 
-              type="radio" 
-              name="companyType" 
+            <input
+              type="radio"
+              name="companyType"
               value="client-based"
-              onChange={handleInputChange} 
+              onChange={handleInputChange}
               className="form-check-input"
             />
             <label className="form-check-label">Client-based Company</label>
           </div>
+          {formErrors.companyType && <p className="error">{formErrors.companyType}</p>}
         </div>
 
         <button type="submit" className="submit-btn">Register Company</button>
