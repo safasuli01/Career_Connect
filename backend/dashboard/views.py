@@ -1,5 +1,8 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import  login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from  ..users.models import User
 from  ..posts.models import Job, Project
 from  .forms import JobForm, ProjectForm
 # Create your views here.

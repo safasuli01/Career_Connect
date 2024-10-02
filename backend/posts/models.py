@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 from django.utils.text import slugify
 
 # Create your models here.
@@ -9,12 +10,13 @@ class Post(models.Model):
     ]
     STATUS = (
         ("active", "Active"),
-        ("expired", "Expired"),
+        ("draft", "Draft"),
+        ("disabled", "Disabled"),
     )
     title = models.CharField(max_length=200)
     description = models.TextField()
     industry = models.CharField(max_length=100, blank=True, null=True)
-    # author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     post_status = models.CharField(max_length=100, choices=STATUS, default="Active")
     created_at = models.DateTimeField(auto_now_add=True)
     location = models.CharField(max_length=200)
@@ -52,3 +54,4 @@ class Project(Post):
     def save(self, *args, **kwargs):
         self.post_type = 'project'  # Ensures post_type is always 'project' for this model
         super().save(*args, **kwargs)
+        

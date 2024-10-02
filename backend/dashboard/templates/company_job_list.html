@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Your Jobs</h1>
+<a href="{% url 'company_job_create' %}">Post New Job</a>
+<ul>
+    {% for job in jobs %}
+        <li>{{ job.title }} - {{ job.post_status }} - {{ job.created_at }}
+            <a href="{% url 'company_job_edit' job.pk %}">Edit</a> |
+            <a href="{% url 'company_job_delete' job.pk %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
