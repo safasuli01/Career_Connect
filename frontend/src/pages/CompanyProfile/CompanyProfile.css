@@ -41,11 +41,11 @@
   }
   
   .nav-tabs .nav-link.active {
-    color: #000000; /* Dark color for the active link */
+    color: #2c9caf; /* Dark color for the active link */
     font-weight: bold;
   }
   
   .nav-tabs .nav-link:hover {
-    color: #007bff; /* Bootstrap primary color for hover effect */
+    color: #2c9caf; /* Bootstrap primary color for hover effect */
   }
   

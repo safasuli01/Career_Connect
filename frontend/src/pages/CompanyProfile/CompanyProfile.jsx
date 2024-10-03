@@ -32,7 +32,7 @@ const CompanyProfile = () => {
             <h6 className="company-name">scandiweb</h6>
             <p className="company-bio text-muted">The eCommerce agency behind the top eCommerce stores</p>
             <p className="company-details text-muted">IT Services and IT Consulting </p>
-            <button className="btn btn-primary ">
+            <button className="btn btn-primary w-25 ">
               <i className="fas fa-plus me-2"></i>Contact Us
             </button>
             
@@ -40,13 +40,10 @@ const CompanyProfile = () => {
 
           {/* Navigation Bar */}
           <div className="mt-4">
-            <nav className="nav nav-tabs justify-content-center">
+            <nav className="nav nav-tabs">
               <NavLink className="nav-link" to="/home">Home</NavLink>
               <NavLink className="nav-link" to="/about">About</NavLink>
-              <NavLink className="nav-link" to="/products">Products</NavLink>
-              <NavLink className="nav-link" to="/posts">Posts</NavLink>
               <NavLink className="nav-link" to="/jobs">Jobs</NavLink>
-              <NavLink className="nav-link" to="/people">People</NavLink>
             </nav>
           </div>
         </div>

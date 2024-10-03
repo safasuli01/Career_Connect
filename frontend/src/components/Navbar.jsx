@@ -39,29 +39,29 @@ function AppNavbar() {
           <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
             <Nav className="mx-auto">
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/" style={{ color: '#2c9caf', fontSize: '16px' }}> {/* Adjust font size */}
+                <Link className="nav-link underlineHover" to="/" style={{ color: '#2c9caf', fontSize: '16px' }}> {/* Adjust font size */}
                   <FontAwesomeIcon icon={faHome} className="me-1" /> Home
                 </Link>
               </Nav.Item>
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/about" style={{ color: '#2c9caf', fontSize: '16px' }}>
-                  <FontAwesomeIcon icon={faUser} className="me-1" /> About
+                <Link className="nav-link underlineHover" to="/about" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                  <FontAwesomeIcon icon={faUser} className="me-1 " /> About
                 </Link>
               </Nav.Item>
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/jobs" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                <Link className="nav-link underlineHover" to="/jobs" style={{ color: '#2c9caf', fontSize: '16px' }}>
                   <FontAwesomeIcon icon={faBriefcase} className="me-1" /> Find Jobs
                 </Link>
               </Nav.Item>
               <Nav.Item className="nav-item">
-                <Link className="nav-link" to="/projects" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                <Link className="nav-link underlineHover" to="/projects" style={{ color: '#2c9caf', fontSize: '16px' }}>
                   <FontAwesomeIcon icon={faProjectDiagram} className="me-1" /> Projects
                 </Link>
               </Nav.Item>
             </Nav>
 
             {/* Login Button */}
-            <Nav className="ms-auto">
+            <Nav className="ms-auto ">
               <Link to="/login" style={{ textDecoration: 'none', color: '#2c9caf' }}>
                 Login
               </Link>

@@ -63,6 +63,11 @@ h2 {
 }
 
 
+#formFooter a {
+  text-decoration: none;
+  color:#2c9caf ;
+}
+
 
 /* TABS */
 
@@ -72,7 +77,7 @@ h2.inactive {
 
 h2.active {
   color: #0d0d0d;
-  border-bottom: 2px solid #5fbae9;
+  border-bottom: 2px solid ;
 }
 
 
@@ -80,7 +85,7 @@ h2.active {
 /* FORM TYPOGRAPHY*/
 
 input[type=button], input[type=submit], input[type=reset]  {
-  background-color: #56baed;
+  background-color: #2c9caf;
   border: none;
   color: white;
   padding: 15px 80px;
@@ -136,7 +141,7 @@ input[type=text], input[type=password] {
 
 input[type=text]:focus, input[type=password]:focus {
   background-color: #fff;
-  border-bottom: 2px solid #5fbae9;
+  border-bottom: 2px solid #2c9caf;
 }
 
 input[type=text]:placeholder, input[type=password]:placeholder {
@@ -234,7 +239,7 @@ input[type=text]:placeholder, input[type=password]:placeholder {
   bottom: -10px;
   width: 0;
   height: 2px;
-  background-color: #56baed;
+  background-color: #2c9caf;
   content: "";
   transition: width 0.2s;
 }
