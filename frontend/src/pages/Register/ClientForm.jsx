@@ -378,6 +378,8 @@ const ClientForm =() => {
     email: "",
     phone_number:"",
     specialization: "",
+    national_id: "", // Add this
+    account_type: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -411,6 +413,8 @@ const ClientForm =() => {
       gender: formData.gender,
       phone_number: formData.phone_number,
       specialization: formData.specialization,
+      national_id: formData.national_id, // Add this
+      account_type: formData.account_type, // Add this
     };
 
     console.log("Payload: ", payload);
@@ -588,6 +592,46 @@ const ClientForm =() => {
             className="form-control"
           />
         </div>
+          {/* national id */}
+              <div className="form-group">
+        <label>
+        <FontAwesomeIcon icon={faPhone} />  National ID
+        </label>
+        <input
+          type="text"
+          name="national_id"
+          value={formData.national_id}
+          onChange={handleChange}
+          className="form-control"
+          required
+        />
+      </div>
+
+      {/* account type */}
+          <div className="form-group">
+      <label>Account Type</label>
+      <div className="form-check form-check-inline">
+        <input
+          type="radio"
+          name="account_type"
+          value="hiring"
+          onChange={handleChange}
+          className="form-check-input"
+        />
+        <label className="form-check-label">Hiring</label>
+      </div>
+      <div className="form-check form-check-inline">
+        <input
+          type="radio"
+          name="account_type"
+          value="seeking"
+          onChange={handleChange}
+          className="form-check-input"
+        />
+        <label className="form-check-label">Seeking</label>
+      </div>
+    </div>
+
 
         {/* Specialization */}
         <div className="form-group">
