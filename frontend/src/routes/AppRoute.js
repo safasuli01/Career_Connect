@@ -14,6 +14,7 @@ import ProjectDetails from '../pages/ProjectDetails/ProjectDetails.jsx';
 import Company from '../pages/CompanyProfile/CompanyProfile.jsx';
 import ProjectList from '../pages/ProjectList/ProjectList.jsx';
 import ProjectPost from '../pages/ProjectPost/Projectpost.jsx';
+import EditProject from '../pages/ProjectDetails/ProjectEdit.jsx'; 
 import JobPost from '../pages/JobPost/JobPost.jsx';
 
 function AppRoutes() {
@@ -38,6 +39,8 @@ function AppRoutes() {
         <Route path="/projectdetails/:id" element={<ProjectDetails />} />
         <Route path="/projectpost" element={<ProjectPost />} />
         <Route path="/jobpost" element={<JobPost />} />
+        <Route path="/project/:id/update/" element={<EditProject />} />
+
       </Routes>
       <Footer /> 
     </Router>

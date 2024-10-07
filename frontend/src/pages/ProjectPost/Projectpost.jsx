@@ -1,27 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Add this line
 import './ProjectPost.css'; // Include the CSS file for custom styles
 
 const NewProjectForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    projectTitle: '',
+    title: '',
     description: '',
     industry: '',
-    location: '',
-    budgetMin: '',
-    budgetMax: '',
+    post_status: 'active',
+    budget: '',
     deadline: '',
   });
+
+  // Set created_at when the component mounts
+  useEffect(() => {
+    const createdAt = new Date().toISOString();
+    setFormData((prevData) => ({
+      ...prevData,
+      created_at: createdAt, // This will be sent to the backend
+    }));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validation
-    if (!formData.projectTitle || formData.projectTitle.length > 32) {
+    if (!formData.title || formData.title.length > 32) {
       alert('Please enter a valid project title (max 32 characters)');
       return;
     }
@@ -33,46 +44,49 @@ const NewProjectForm = () => {
       alert('Please select an industry');
       return;
     }
-    if (!formData.location) {
-      alert('Please select a location');
-      return;
-    }
-    if (!formData.budgetMin || !formData.budgetMax || Number(formData.budgetMin) >= Number(formData.budgetMax)) {
-      alert('Please enter a valid budget range');
-      return;
-    }
     if (!formData.deadline) {
       alert('Please select a deadline');
       return;
     }
 
-    console.log(formData);
+    // Remove created_at from being sent if your backend does not expect it
+    const { created_at, ...dataToSend } = formData;
+
+    console.log('Form Data:', dataToSend);
+
+    try {
+      // Make the POST request without token for authorization
+      const response = await axios.post('http://127.0.0.1:8000/project/create/', dataToSend);
+      console.log('Project created successfully:', response.data);
+
+      // Redirect to Project List and pass the new project data
+      navigate('/projects', { state: { newProject: response.data } });
+    } catch (error) {
+      console.error('Error creating project:', error);
+      alert('Failed to create project. Please try again later.');
+    }
   };
 
   return (
     <div className="new-project-form">
-      <form className="form " onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <div className="form-header text-center">
-          <h2 className=''>New Project</h2>
+          <h2>New Project</h2>
         </div>
 
         {/* Project Title */}
         <div className="form-group">
-          <label htmlFor="projectTitle">Project Title</label>
+          <label htmlFor="title">Project Title</label>
           <input
             className="form-control"
-            id="projectTitle"
-            name="projectTitle"
-            placeholder="Enter project Title"
-
-            value={formData.projectTitle}
+            id="title"
+            name="title"
+            placeholder="Enter project title"
+            value={formData.title}
             onChange={handleChange}
             maxLength="32"
             required
           />
-          <small className="form-text text-muted">
-            The title must contain a maximum of 32 characters.
-          </small>
         </div>
 
         {/* Description */}
@@ -80,7 +94,6 @@ const NewProjectForm = () => {
           <label htmlFor="description">Description</label>
           <textarea
             className="form-control"
-            
             id="description"
             name="description"
             placeholder="Enter project description"
@@ -89,15 +102,11 @@ const NewProjectForm = () => {
             rows="4"
             required
           />
-          <small className="form-text text-muted">
-            Give your project a good description so everyone knows what it's for.
-          </small>
         </div>
 
         {/* Industry */}
         <div className="form-group">
-          <label  htmlFor="industry">Industry</label>
-          
+          <label htmlFor="industry">Industry</label>
           <select
             className="form-control"
             id="industry"
@@ -106,7 +115,7 @@ const NewProjectForm = () => {
             onChange={handleChange}
             required
           >
-            <option value="" disabled></option>
+            <option value="" disabled>Select an industry</option>
             <option value="Tech">Tech</option>
             <option value="Finance">Finance</option>
             <option value="Healthcare">Healthcare</option>
@@ -114,52 +123,36 @@ const NewProjectForm = () => {
           </select>
         </div>
 
-        {/* Location */}
+        {/* Post Status */}
         <div className="form-group">
-          <label htmlFor="location">Location</label>
+          <label htmlFor="post_status">Post Status</label>
           <select
             className="form-control"
-            id="location"
-            name="location"
-            value={formData.location}
+            id="post_status"
+            name="post_status"
+            value={formData.post_status}
             onChange={handleChange}
             required
           >
-            <option value="" disabled></option>
-            <option value="Prague">Prague</option>
-            <option value="Remote">Remote</option>
-            <option value="Melbourne">Melbourne</option>
-            <option value="Bangalore">Bangalore</option>
-            <option value="Nicosia">Nicosia</option>
-            <option value="Tokyo">Tokyo</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="disabled">Disabled</option>
           </select>
         </div>
 
         {/* Budget */}
         <div className="form-group">
           <label htmlFor="budget">Budget (Range)</label>
-          <div className="d-flex">
-            <input
-              type="number"
-              className="form-control mr-2"
-              id="budgetMin"
-              name="budgetMin"
-              placeholder="Min"
-              value={formData.budgetMin}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="number"
-              className="form-control"
-              id="budgetMax"
-              name="budgetMax"
-              placeholder="Max"
-              value={formData.budgetMax}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <input
+            type="number"
+            className="form-control"
+            id="budget"
+            name="budget"
+            placeholder="Enter budget"
+            value={formData.budget}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         {/* Deadline */}

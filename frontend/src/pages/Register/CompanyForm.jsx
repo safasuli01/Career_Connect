@@ -1,286 +1,293 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './CompanyForm.css';
+import React, { useState } from "react";
+import "./CompanyForm.css";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBuilding, faMapMarkerAlt, faFileAlt, faPhone, faIndustry, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faEnvelope, faLock, faPhone, faBriefcase, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
-function CompanyForm() {
+const CompanyForm = () => {
   const [formData, setFormData] = useState({
+    industry: "",
+    registration_id: "",
+    registration_documents: null,
+    phone_number: "",
+    location: "",
+    client_base: false,
+    logo: null,
     user: {
-      first_name: '',
-      last_name: '',
-      username: '',
-      email: '',
-      password: '',
-    },
-    company_name: '',
-    location: '',
-    registration_id: '',
-    registration_document: null,  // Retaining the field for future
-    phone_number: '',
-    logo: null,  // Retaining the field for future
-    industry: '',
-    company_type: false,
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "company",
+    }
   });
 
-  const [formErrors, setFormErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
-  // Handle input changes
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name in formData.user) {
+
+    if (name.startsWith("user.")) {
+      const userField = name.split(".")[1];
       setFormData({
         ...formData,
         user: {
           ...formData.user,
-          [name]: value,
+          [userField]: value,
         },
       });
+    } else if (name === "registration_documents" || name === "logo") {
+      setFormData({
+        ...formData,
+        [name]: e.target.files[0],
+      });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
     }
   };
 
-  // Handle file changes
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
-  };
-
-  // Handle checkbox changes for company_type
-  const handleCheckboxChange = (e) => {
-    setFormData({ ...formData, company_type: e.target.checked });
-  };
-
-  // Validation logic
-  const validateForm = () => {
-    const errors = {};
-    // User fields validation
-    if (!formData.user.first_name) errors.first_name = "First name is required";
-    if (!formData.user.last_name) errors.last_name = "Last name is required";
-    if (!formData.user.username) errors.username = "Username is required";
-    if (!formData.user.email) errors.email = "Email is required";
-    if (!formData.user.password) errors.password = "Password is required";
-
-    // Company fields validation
-    if (!formData.company_name) errors.company_name = "Company name is required";
-    if (!formData.location) errors.location = "Location is required";
-    if (!formData.registration_id) errors.registration_id = "Registration ID is required";
-    if (!formData.phone_number || !/^01[0-2,5]{1}[0-9]{8}$/.test(formData.phone_number)) {
-      errors.phone_number = "Valid Egyptian phone number is required";
-    }
-    if (!formData.industry) errors.industry = "Industry is required";
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  // Handling form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      const formDataToSend = new FormData();
 
-      // Append user data
-      Object.keys(formData.user).forEach((key) => {
-        formDataToSend.append(`user.${key}`, formData.user[key]); // Correct nested syntax
-      });
+    if (formData.user.password !== formData.user.confirmPassword) {
+      setErrorMessage("Passwords do not match!");
+      return;
+    }
 
-      // Append company data
-      Object.keys(formData).forEach((key) => {
-        if (key !== 'user') {
-          if (key === 'company_type') {
-            formDataToSend.append(key, formData.company_type ? 'true' : 'false'); // Handle boolean
-          } else if (formData[key] !== null) {
-            formDataToSend.append(key, formData[key]);
-          }
+    if (!/^01[0-2,5]{1}[0-9]{8}$/.test(formData.phone_number)) {
+      setErrorMessage("Invalid phone number format!");
+      return;
+    }
+
+    if (formData.registration_id.length !== 14) {
+      setErrorMessage("Registration ID must be exactly 14 digits!");
+      return;
+    }
+
+    const formDataObj = new FormData();
+    formDataObj.append("user.username", formData.user.username);
+    formDataObj.append("user.email", formData.user.email);
+    formDataObj.append("user.password", formData.user.password);
+    formDataObj.append("user.role", formData.user.role);
+    formDataObj.append("industry", formData.industry);
+    formDataObj.append("registration_id", formData.registration_id);
+    formDataObj.append("registration_documents", formData.registration_documents);
+    formDataObj.append("phone_number", formData.phone_number);
+    formDataObj.append("location", formData.location);
+    formDataObj.append("logo", formData.logo);
+    formDataObj.append("client_base", formData.client_base);
+
+    fetch("http://127.0.0.1:8000/company/", {
+      method: "POST",
+      body: formDataObj,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || "Registration Failed!");
+          });
         }
-      });
-
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/register/company/', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        return response.json();
+      })
+      .then((data) => {
         setSuccessMessage("Company registered successfully!");
         setErrorMessage("");
-        navigate('/'); // Navigate to the landing page on success
-      } catch (error) {
-        console.error("Error submitting form:", error.response?.data);
-        setErrorMessage(error.response?.data?.error || "An error occurred during registration.");
-      }
-    }
+        setFormData({
+          industry: "",
+          registration_id: "",
+          registration_documents: null,
+          phone_number: "",
+          location: "",
+          client_base: false,
+          logo: null,
+          user: {
+            username: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            role: "company",
+          }
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error.message || "An error occurred during registration.");
+      });
   };
 
   return (
-    <div className="company-form-container">
-      <form className="company-form" onSubmit={handleSubmit}>
-        <header>Company Registration</header>
-
-        {successMessage && <p className="success">{successMessage}</p>}
-        {errorMessage && <p className="error">{errorMessage}</p>}
-
-        {/* User Information */}
-        <div className="input-field">
-          <label>First Name</label>
-          <input
-            type="text"
-            name="first_name"
-            value={formData.user.first_name}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.first_name && <p className="error">{formErrors.first_name}</p>}
+    <div className="new-project-form">
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-header">
+          <h2>Company Registration</h2>
         </div>
 
-        <div className="input-field">
-          <label>Last Name</label>
+        {/* Username */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faUser} /> Username</label>
           <input
             type="text"
-            name="last_name"
-            value={formData.user.last_name}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.last_name && <p className="error">{formErrors.last_name}</p>}
-        </div>
-
-        <div className="input-field">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
+            name="user.username"
             value={formData.user.username}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="form-control"
+            required
           />
-          {formErrors.username && <p className="error">{formErrors.username}</p>}
         </div>
 
-        <div className="input-field">
-          <label>Email</label>
+        {/* Email */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faEnvelope} /> Email</label>
           <input
             type="email"
-            name="email"
+            name="user.email"
             value={formData.user.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="form-control"
+            required
           />
-          {formErrors.email && <p className="error">{formErrors.email}</p>}
         </div>
 
-        <div className="input-field">
-          <label>Password</label>
+        {/* Password */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faLock} /> Password</label>
           <input
             type="password"
-            name="password"
+            name="user.password"
             value={formData.user.password}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="form-control"
+            required
           />
-          {formErrors.password && <p className="error">{formErrors.password}</p>}
         </div>
 
-        {/* Company Information */}
-        <div className="input-field">
-          <label>
-            <FontAwesomeIcon icon={faBuilding} /> Company Name
-          </label>
+        {/* Confirm Password */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faLock} /> Confirm Password</label>
           <input
-            type="text"
-            name="company_name"
-            value={formData.company_name}
-            onChange={handleInputChange}
+            type="password"
+            name="user.confirmPassword"
+            value={formData.user.confirmPassword}
+            onChange={handleChange}
             className="form-control"
+            required
           />
-          {formErrors.company_name && <p className="error">{formErrors.company_name}</p>}
         </div>
 
-        <div className="input-field">
-          <label>
-            <FontAwesomeIcon icon={faMapMarkerAlt} /> Location
-          </label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.location && <p className="error">{formErrors.location}</p>}
-        </div>
-
-        <div className="input-field">
-          <label>Registration ID</label>
-          <input
-            type="text"
-            name="registration_id"
-            value={formData.registration_id}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.registration_id && <p className="error">{formErrors.registration_id}</p>}
-        </div>
-
-        {/* <div className="input-field">
-          <label>
-            <FontAwesomeIcon icon={faFileAlt} /> Registration Document (PDF)
-          </label>
-          <input
-            type="file"
-            name="registration_document"
-            onChange={handleFileChange}
-            className="form-control"
-          />
-          {formErrors.registration_document && <p className="error">{formErrors.registration_document}</p>}
-        </div> */}
-
-        <div className="input-field">
-          <label>
-            <FontAwesomeIcon icon={faPhone} /> Phone
-          </label>
-          <input
-            type="text"
-            name="phone_number"
-            value={formData.phone_number}
-            onChange={handleInputChange}
-            className="form-control"
-          />
-          {formErrors.phone_number && <p className="error">{formErrors.phone_number}</p>}
-        </div>
-
-        <div className="input-field">
-          <label>
-            <FontAwesomeIcon icon={faIndustry} /> Industry
-          </label>
+        {/* Industry */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faBriefcase} /> Industry</label>
           <input
             type="text"
             name="industry"
             value={formData.industry}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="form-control"
           />
-          {formErrors.industry && <p className="error">{formErrors.industry}</p>}
         </div>
 
-        <div className="input-field">
-          <label>Company Type (Private/Public)</label>
+        {/* Registration ID */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faFileAlt} /> Registration ID</label>
           <input
-            type="checkbox"
-            name="company_type"
-            checked={formData.company_type}
-            onChange={handleCheckboxChange}
+            type="text"
+            name="registration_id"
+            value={formData.registration_id}
+            onChange={handleChange}
+            className="form-control"
           />
         </div>
 
-        <button type="submit">Register</button>
+        {/* Registration Documents */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faFileAlt} /> Registration Documents</label>
+          <input
+            type="file"
+            name="registration_documents"
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+
+        {/* Phone Number */}
+        <div className="form-group">
+          <label><FontAwesomeIcon icon={faPhone} /> Phone Number</label>
+          <input
+            type="text"
+            name="phone_number"
+            value={formData.phone_number}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+
+        {/* Location */}
+        <div className="form-group">
+          <label>Location</label>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+
+        {/* Logo */}
+        <div className="form-group">
+          <label>Company Logo</label>
+          <input
+            type="file"
+            name="logo"
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+
+        {/* Client Base */}
+        <div className="form-group">
+          <label>Client Based Company?</label>
+          <div className="form-check form-check-inline">
+            <input
+              type="radio"
+              name="client_base"
+              value={true}
+              onChange={handleChange}
+              className="form-check-input"
+              checked={formData.client_base === true}
+            />
+            <label className="form-check-label">Yes</label>
+          </div>
+          <div className="form-check form-check-inline">
+            <input
+              type="radio"
+              name="client_base"
+              value={false}
+              onChange={handleChange}
+              className="form-check-input"
+              checked={formData.client_base === false}
+            />
+            <label className="form-check-label">No</label>
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button type="submit" className="btn btn-primary">Register</button>
+
+        {/* Link to Switch Form */}
+        <label className="switch-form">Already have an account?</label>{" "}
+        <Link to="/login">Log in</Link>
+
+        {/* Success and Error Messages */}
+        {successMessage && <div className="alert alert-success">{successMessage}</div>}
+        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       </form>
     </div>
   );
-}
+};
 
 export default CompanyForm;

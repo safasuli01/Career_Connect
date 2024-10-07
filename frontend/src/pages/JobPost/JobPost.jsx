@@ -8,8 +8,8 @@ const NewJobForm = () => {
     location: '',
     jobType: '',
     industry: '',
-    status: 'Apply',
-    createdAt: new Date().toISOString().split('T')[0], // Automatically setting today's date
+    status: 'active', // Default value matching your backend
+    createdAt: new Date().toISOString().split('T')[0], // Commented out if not needed
   });
 
   const handleChange = (e) => {
@@ -17,7 +17,7 @@ const NewJobForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validation
@@ -42,7 +42,37 @@ const NewJobForm = () => {
       return;
     }
 
-    console.log(formData);
+    // Prepare the data to send to the backend
+    const formDataToSend = {
+      title: formData.jobTitle,      // Matches the Django model
+      description: formData.description,
+      location: formData.location,
+      job_type: formData.jobType,     // Matches the Django model
+      industry: formData.industry,
+      post_status: formData.status,    // Matches the Django model
+      createdAt: formData.createdAt, // If needed, else remove this line
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/job/create/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formDataToSend),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Job created successfully:', result);
+      // Optionally reset the form or redirect
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to create job. Please check the console for more details.');
+    }
   };
 
   return (
@@ -91,22 +121,15 @@ const NewJobForm = () => {
         {/* Location */}
         <div className="form-group">
           <label htmlFor="location">Location</label>
-          <select
+          <input
             className="form-control"
             id="location"
             name="location"
+            placeholder="Enter location"
             value={formData.location}
             onChange={handleChange}
             required
-          >
-            <option value="" disabled></option>
-            <option value="Prague">Prague</option>
-            <option value="Remote">Remote</option>
-            <option value="Melbourne">Melbourne</option>
-            <option value="Bangalore">Bangalore</option>
-            <option value="Nicosia">Nicosia</option>
-            <option value="Tokyo">Tokyo</option>
-          </select>
+          />
         </div>
 
         {/* Job Type */}
@@ -120,30 +143,25 @@ const NewJobForm = () => {
             onChange={handleChange}
             required
           >
-            <option value="" disabled></option>
-            <option value="Part Time">Part Time</option>
-            <option value="Full Time">Full Time</option>
-            <option value="Remote">Remote</option>
+            <option value="" disabled>Select Job Type</option>
+            <option value="part_time">Part Time</option>
+            <option value="full_time">Full Time</option>
+            <option value="remote">Remote</option>
           </select>
         </div>
 
         {/* Industry */}
         <div className="form-group">
           <label htmlFor="industry">Industry</label>
-          <select
+          <input
             className="form-control"
             id="industry"
             name="industry"
+            placeholder="Enter industry"
             value={formData.industry}
             onChange={handleChange}
             required
-          >
-            <option value="" disabled></option>
-            <option value="Tech">Tech</option>
-            <option value="Finance">Finance</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Education">Education</option>
-          </select>
+          />
         </div>
 
         {/* Status */}
@@ -157,23 +175,10 @@ const NewJobForm = () => {
             onChange={handleChange}
             required
           >
-            <option value="Apply">Apply</option>
-            <option value="Expired">Expired</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="disabled">Disabled</option>
           </select>
-        </div>
-
-        {/* Created At (auto field) */}
-        <div className="form-group">
-          <label htmlFor="createdAt">Created At</label>
-          <input
-            type="date"
-            className="form-control"
-            id="createdAt"
-            name="createdAt"
-            value={formData.createdAt}
-            onChange={handleChange}
-            disabled
-          />
         </div>
 
         <button type="submit" className="btn btn-primary">Create Job Post</button>

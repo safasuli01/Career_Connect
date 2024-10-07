@@ -8,24 +8,23 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/auth/login/", {
-        username: email,  // Django uses username for authentication
+      const response = await axios.post("http://127.0.0.1:8000/individual/login/", {
+        username: email,
         password: password,
       });
       
-      // Save the token in localStorage or cookies
-      localStorage.setItem("token", response.data.token);
-
-      // Redirect the user to the landing page after successful login
-      navigate("/"); // Update this to the landing page route
-
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("authToken", token);
+        navigate("/"); // Navigate to landing page
+      } else {
+        setErrorMessage("Failed to retrieve token. Please try again.");
+      }
     } catch (error) {
-      // Handle error cases
       if (error.response) {
         setErrorMessage(error.response.data.message || "Login failed. Please try again.");
       } else {
@@ -33,6 +32,7 @@ const Login = () => {
       }
     }
   };
+  
 
   return (
     <div className="wrapper fadeInDown">

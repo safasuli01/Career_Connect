@@ -174,14 +174,37 @@
 
 
 
-  .footer {
-    background-color: #f8f9fa;
+  footer {
+    background-color: #f5f5f5;
   }
   
+  .icon-wrapper {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+    color: #569fb1;
+  }
 
+  .icon-wrapper:hover {
+    background-color: #63b5c5; /* Color to change on hover */
+    color: #ffffff; /* Icon color change on hover */
+    transform: scale(1.1); /* Slight scaling effect on hover */
+  }
+
+  .icon-wrapper i {
+    font-size: 20px;
+  }
 
   
-
+footer .logo{
+  color: #569fb1;
+  
+}
  
   
 
