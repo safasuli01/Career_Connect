@@ -83,7 +83,7 @@ const ClientForm = () => {
 
     console.log("Payload: ", JSON.stringify(payload)); // Debugging log
 
-    fetch("http://127.0.0.1:8000/individual/", {
+    fetch("http://127.0.0.1:8000/api/individual/register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

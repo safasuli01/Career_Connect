@@ -16,6 +16,7 @@ import ProjectList from '../pages/ProjectList/ProjectList.jsx';
 import ProjectPost from '../pages/ProjectPost/Projectpost.jsx';
 import EditProject from '../pages/ProjectDetails/ProjectEdit.jsx'; 
 import JobPost from '../pages/JobPost/JobPost.jsx';
+import UpdateJob from '../pages/JobDetails/UpdateJob.jsx';
 
 function AppRoutes() {
   return (
@@ -31,14 +32,15 @@ function AppRoutes() {
         <Route path="/company" element={<Company />} />  
         
         {/* Job Routes */}
-        <Route path="/jobs" element={<JobList />} />
+        <Route path="/jobs" element={<JobList />} />  
+        <Route path="/jobpost" element={<JobPost />} />
         <Route path="/jobdetails/:id" element={<JobDetails />} />
+        <Route path="/job/:id/update" element={<UpdateJob />} /> 
 
         {/* Project Routes */}
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/projectdetails/:id" element={<ProjectDetails />} />
         <Route path="/projectpost" element={<ProjectPost />} />
-        <Route path="/jobpost" element={<JobPost />} />
         <Route path="/project/:id/update/" element={<EditProject />} />
 
       </Routes>

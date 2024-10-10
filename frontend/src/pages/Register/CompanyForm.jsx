@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./CompanyForm.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faPhone, faBriefcase, faFileAlt } from '@fortawesome/free-solid-svg-icons';
@@ -13,31 +12,44 @@ const CompanyForm = () => {
     location: "",
     client_base: false,
     logo: null,
-    user: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "company",
-    }
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [formErrors, setFormErrors] = useState({}); // To track errors for each field
+
+  const validateForm = () => {
+    let errors = {};
+    if (formData.username.length < 3) {
+      errors.username = "Username must be at least 3 characters long.";
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Email address is invalid.";
+    }
+    if (formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long.";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match.";
+    }
+    if (!/^01[0-2,5]{1}[0-9]{8}$/.test(formData.phone_number)) {
+      errors.phone_number = "Invalid phone number format.";
+    }
+    if (formData.registration_id.length !== 14) {
+      errors.registration_id = "Registration ID must be exactly 14 digits.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0; // Return true if no errors
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name.startsWith("user.")) {
-      const userField = name.split(".")[1];
-      setFormData({
-        ...formData,
-        user: {
-          ...formData.user,
-          [userField]: value,
-        },
-      });
-    } else if (name === "registration_documents" || name === "logo") {
+    if (name === "registration_documents" || name === "logo") {
       setFormData({
         ...formData,
         [name]: e.target.files[0],
@@ -48,31 +60,25 @@ const CompanyForm = () => {
         [name]: value,
       });
     }
+
+    // Reset error for the field being changed
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: null,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formData.user.password !== formData.user.confirmPassword) {
-      setErrorMessage("Passwords do not match!");
-      return;
-    }
+    if (!validateForm()) return; // Only proceed if validation passes
 
-    if (!/^01[0-2,5]{1}[0-9]{8}$/.test(formData.phone_number)) {
-      setErrorMessage("Invalid phone number format!");
-      return;
-    }
-
-    if (formData.registration_id.length !== 14) {
-      setErrorMessage("Registration ID must be exactly 14 digits!");
-      return;
-    }
-
+    // Prepare FormData object
     const formDataObj = new FormData();
-    formDataObj.append("user.username", formData.user.username);
-    formDataObj.append("user.email", formData.user.email);
-    formDataObj.append("user.password", formData.user.password);
-    formDataObj.append("user.role", formData.user.role);
+    formDataObj.append("user.username", formData.username);
+    formDataObj.append("user.email", formData.email);
+    formDataObj.append("user.password", formData.password);
+    formDataObj.append("user.role", "company"); // Assuming role is always 'company'
     formDataObj.append("industry", formData.industry);
     formDataObj.append("registration_id", formData.registration_id);
     formDataObj.append("registration_documents", formData.registration_documents);
@@ -81,14 +87,14 @@ const CompanyForm = () => {
     formDataObj.append("logo", formData.logo);
     formDataObj.append("client_base", formData.client_base);
 
-    fetch("http://127.0.0.1:8000/company/", {
+    fetch("http://127.0.0.1:8000/api/company/register/", {
       method: "POST",
       body: formDataObj,
     })
       .then((response) => {
         if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || "Registration Failed!");
+          return response.text().then((text) => {
+            throw new Error(text || "Registration Failed!");
           });
         }
         return response.json();
@@ -96,7 +102,7 @@ const CompanyForm = () => {
       .then((data) => {
         setSuccessMessage("Company registered successfully!");
         setErrorMessage("");
-        setFormData({
+        setFormData({ // Reset form after successful registration
           industry: "",
           registration_id: "",
           registration_documents: null,
@@ -104,14 +110,12 @@ const CompanyForm = () => {
           location: "",
           client_base: false,
           logo: null,
-          user: {
-            username: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            role: "company",
-          }
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
         });
+        setFormErrors({}); // Clear errors
       })
       .catch((error) => {
         setErrorMessage(error.message || "An error occurred during registration.");
@@ -130,12 +134,13 @@ const CompanyForm = () => {
           <label><FontAwesomeIcon icon={faUser} /> Username</label>
           <input
             type="text"
-            name="user.username"
-            value={formData.user.username}
+            name="username"
+            value={formData.username}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.username ? 'is-invalid' : ''}`}
             required
           />
+          {formErrors.username && <div className="invalid-feedback">{formErrors.username}</div>}
         </div>
 
         {/* Email */}
@@ -143,12 +148,13 @@ const CompanyForm = () => {
           <label><FontAwesomeIcon icon={faEnvelope} /> Email</label>
           <input
             type="email"
-            name="user.email"
-            value={formData.user.email}
+            name="email"
+            value={formData.email}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.email ? 'is-invalid' : ''}`}
             required
           />
+          {formErrors.email && <div className="invalid-feedback">{formErrors.email}</div>}
         </div>
 
         {/* Password */}
@@ -156,12 +162,13 @@ const CompanyForm = () => {
           <label><FontAwesomeIcon icon={faLock} /> Password</label>
           <input
             type="password"
-            name="user.password"
-            value={formData.user.password}
+            name="password"
+            value={formData.password}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.password ? 'is-invalid' : ''}`}
             required
           />
+          {formErrors.password && <div className="invalid-feedback">{formErrors.password}</div>}
         </div>
 
         {/* Confirm Password */}
@@ -169,12 +176,13 @@ const CompanyForm = () => {
           <label><FontAwesomeIcon icon={faLock} /> Confirm Password</label>
           <input
             type="password"
-            name="user.confirmPassword"
-            value={formData.user.confirmPassword}
+            name="confirmPassword"
+            value={formData.confirmPassword}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.confirmPassword ? 'is-invalid' : ''}`}
             required
           />
+          {formErrors.confirmPassword && <div className="invalid-feedback">{formErrors.confirmPassword}</div>}
         </div>
 
         {/* Industry */}
@@ -197,8 +205,9 @@ const CompanyForm = () => {
             name="registration_id"
             value={formData.registration_id}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.registration_id ? 'is-invalid' : ''}`}
           />
+          {formErrors.registration_id && <div className="invalid-feedback">{formErrors.registration_id}</div>}
         </div>
 
         {/* Registration Documents */}
@@ -220,9 +229,10 @@ const CompanyForm = () => {
             name="phone_number"
             value={formData.phone_number}
             onChange={handleChange}
-            className="form-control"
+            className={`form-control ${formErrors.phone_number ? 'is-invalid' : ''}`}
             required
           />
+          {formErrors.phone_number && <div className="invalid-feedback">{formErrors.phone_number}</div>}
         </div>
 
         {/* Location */}
@@ -275,19 +285,15 @@ const CompanyForm = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button type="submit" className="btn btn-primary">Register</button>
 
-        {/* Link to Switch Form */}
-        <label className="switch-form">Already have an account?</label>{" "}
-        <Link to="/login">Log in</Link>
-
-        {/* Success and Error Messages */}
+        {/* Success/Error Messages */}
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       </form>
     </div>
   );
 };
+
 
 export default CompanyForm;

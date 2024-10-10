@@ -1,12 +1,56 @@
-// src/pages/LandingPage.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./LandingPage.css"; 
+import axios from 'axios';
 import image1 from '../../assets/culture/1.avif'; 
 import image2 from '../../assets/culture/2.avif';
 import image3 from '../../assets/culture/3.avif';
 
 const LandingPage = () => {
+  const [jobs, setJobs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedJobType, setSelectedJobType] = useState('All Types');
+  const [selectedIndustry, setSelectedIndustry] = useState('All Industries');
+  const [jobTypes, setJobTypes] = useState([]);
+  const [industries, setIndustries] = useState([]);
+  const navigate = useNavigate();
+
+  // Fetch jobs from the backend
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/job/all/');
+        setJobs(response.data);
+
+        // Extract unique job types and industries
+        const uniqueJobTypes = [...new Set(response.data.map(job => job.job_type))];
+        const uniqueIndustries = [...new Set(response.data.map(job => job.industry))];
+        setJobTypes(uniqueJobTypes);
+        setIndustries(uniqueIndustries);
+
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  // Filter jobs based on search term, job type, and industry
+  const filteredJobs = jobs.filter((job) => {
+    return (
+      (selectedJobType === 'All Types' || job.job_type === selectedJobType) &&
+      (selectedIndustry === 'All Industries' || job.industry === selectedIndustry) &&
+      (job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
+  // Handle Apply button click
+  const handleApplyClick = (id) => {
+    console.log('Navigating to job details for ID:', id);
+    navigate(`/jobdetails/${id}`);
+  };
+
   return (
     <div>      
       {/* Hero Section */}
@@ -23,54 +67,67 @@ const LandingPage = () => {
         <div className="container d-flex justify-content-between align-items-center">
           {/* Search Bar */}
           <div className="InputContainer">
-            <input placeholder="Search.." id="input" className="input" name="text" type="text"/>
+            <input
+              placeholder="Search.."
+              id="input"
+              className="input"
+              name="text"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
 
-          {/* Departments Dropdown */}
+          {/* Job Type Dropdown */}
           <div className="dropdown me-2">
-            <a className="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Departments</a>
+            <a className="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Job Type</a>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><Link className="dropdown-item" to="/department/customer-support">Customer Support</Link></li>
-              <li><Link className="dropdown-item" to="/department/ga">G&A</Link></li>
-              <li><Link className="dropdown-item" to="/department/gtm">GTM</Link></li>
-              <li><Link className="dropdown-item" to="/department/marketing">Marketing</Link></li>
-              <li><Link className="dropdown-item" to="/department/product">Product</Link></li>
-              <li><Link className="dropdown-item" to="/department/rd">R&D</Link></li>
-              <li><Link className="dropdown-item" to="/department/revenue-ops">Revenue Ops</Link></li>
+              <li>
+                <a className="dropdown-item" href="#" onClick={() => setSelectedJobType('All Types')}>All Types</a>
+              </li>
+              {jobTypes.map((type, index) => (
+                <li key={index}>
+                  <a className="dropdown-item" href="#" onClick={() => setSelectedJobType(type)}>{type}</a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Offices Dropdown */}
+          {/* Industry Dropdown */}
           <div className="dropdown">
-            <button className="btn dropdown-toggle" type="button" id="officesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              Offices
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="officesDropdown">
-              <li><Link className="dropdown-item" to="/offices/prague">Prague</Link></li>
-              <li><Link className="dropdown-item" to="/offices/remote">Remote</Link></li>
-              <li><Link className="dropdown-item" to="/offices/melbourne">Melbourne</Link></li>
-              <li><Link className="dropdown-item" to="/offices/bangalore">Bangalore</Link></li>
-              <li><Link className="dropdown-item" to="/offices/nicosia">Nicosia</Link></li>
-              <li><Link className="dropdown-item" to="/offices/tokyo">Tokyo</Link></li>
+            <a className="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Industry</a>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <li>
+                <a className="dropdown-item" href="#" onClick={() => setSelectedIndustry('All Industries')}>All Industries</a>
+              </li>
+              {industries.map((industry, index) => (
+                <li key={index}>
+                  <a className="dropdown-item" href="#" onClick={() => setSelectedIndustry(industry)}>{industry}</a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </section>
 
-      {/* Card Section */}
+      {/* Job Listings */}
       <section className="card-section py-5">
         <div className="container">
-          {/* Cards */}
           <div className="row">
-            {/* Multiple cards */}
-            {[...Array(6)].map((_, index) => (
-              <div key={index} className="col-md-4">
+            {filteredJobs.map((job) => (
+              <div key={job.id} className="col-md-4">
                 <div className="card cards bg-light mb-4">
                   <div className="card-body">
-                    <h6 className="card-title text-secondary">GTM</h6>
-                    <h5 className="card-title">Account Development Manager</h5>
-                    <p className="card-text text-muted">Prague</p>
-                    <a href="/apply" className="btn btn-outline-info">Apply &gt;</a>
+                    <h6 className="card-title text-secondary">{job.industry}</h6>
+                    <h5 className="card-title">{job.title}</h5>
+                    <p className="card-text text-muted">{job.location}</p>
+                    <button
+                      type="button" 
+                      className="btn btn-outline-info"
+                      onClick={() => handleApplyClick(job.id)}
+                    >
+                      Apply &gt;
+                    </button>
                   </div>
                 </div>
               </div>

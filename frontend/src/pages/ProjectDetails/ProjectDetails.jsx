@@ -13,7 +13,7 @@ const ProjectDetails = () => {
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/project/${id}/`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/project/${id}/`);
         setProject(response.data);
       } catch (error) {
         console.error('Error fetching project details:', error);
@@ -26,7 +26,7 @@ const ProjectDetails = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this project?')) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/project/${id}/delete/`);
+        await axios.delete(`http://127.0.0.1:8000/api/project/${id}/delete/`);
         alert('Project deleted successfully');
         navigate('/projects');  // Redirect to project list
       } catch (error) {
@@ -59,6 +59,10 @@ const ProjectDetails = () => {
           {/* Description Section */}
           <p>{project.description}</p>
 
+          {/* Author and Post Status */}
+          <p><strong>Author:</strong> {project.author_username}</p>
+          <p><strong>Status:</strong> {project.post_status}</p>
+
           <div className="d-flex align-items-center mb-3">
             <Button variant="primary" className="me-2 w-25">
               Contact me
@@ -83,7 +87,9 @@ const ProjectDetails = () => {
               <FontAwesomeIcon icon={faClock} /> Deadline: {project.deadline}
             </p>
             <div className="mt-3">
-              <Badge bg="success">Open</Badge>
+              <Badge bg={project.post_status === 'active' ? 'success' : 'secondary'}>
+                {project.post_status.charAt(0).toUpperCase() + project.post_status.slice(1)}
+              </Badge>
             </div>
           </div>
         </Col>
