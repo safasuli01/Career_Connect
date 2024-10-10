@@ -135,10 +135,10 @@
   overflow: hidden;
   outline: 2px solid #2c9caf;
 }
- .card:hover {
+ /* .card:hover {
     transform: scale(1.05);
     transition: 0.3s ease-in-out;
-  }
+  } */
 
 .cards a {
 

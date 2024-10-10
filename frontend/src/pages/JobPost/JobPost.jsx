@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './JobPost.css'; // Include the CSS file for custom styles
+import { useNavigate } from 'react-router-dom';
+import './JobPost.css';
 
 const NewJobForm = () => {
   const [formData, setFormData] = useState({
@@ -8,49 +9,66 @@ const NewJobForm = () => {
     location: '',
     jobType: '',
     industry: '',
-    status: 'active', // Default value matching your backend
-    createdAt: new Date().toISOString().split('T')[0], // Commented out if not needed
+    status: 'active',
+    createdAt: new Date().toISOString().split('T')[0],
   });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: '' });
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.jobTitle) {
+      newErrors.jobTitle = 'Job title is required.';
+    } else if (formData.jobTitle.length > 32) {
+      newErrors.jobTitle = 'Job title cannot exceed 32 characters.';
+    }
+
+    if (!formData.description) {
+      newErrors.description = 'Job description is required.';
+    }
+
+    if (!formData.location) {
+      newErrors.location = 'Location is required.';
+    }
+
+    if (!formData.jobType) {
+      newErrors.jobType = 'Please select a job type.';
+    }
+
+    if (!formData.industry) {
+      newErrors.industry = 'Industry is required.';
+    }
+
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!formData.jobTitle || formData.jobTitle.length > 32) {
-      alert('Please enter a valid job title (max 32 characters)');
-      return;
-    }
-    if (!formData.description) {
-      alert('Please enter a job description');
-      return;
-    }
-    if (!formData.location) {
-      alert('Please select a location');
-      return;
-    }
-    if (!formData.jobType) {
-      alert('Please select a job type');
-      return;
-    }
-    if (!formData.industry) {
-      alert('Please select an industry');
+    setSuccessMessage('');
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    // Prepare the data to send to the backend
+    setIsLoading(true);
+
     const formDataToSend = {
-      title: formData.jobTitle,      // Matches the Django model
+      title: formData.jobTitle,
       description: formData.description,
       location: formData.location,
-      job_type: formData.jobType,     // Matches the Django model
+      job_type: formData.jobType,
       industry: formData.industry,
-      post_status: formData.status,    // Matches the Django model
-      createdAt: formData.createdAt, // If needed, else remove this line
+      post_status: formData.status,
+      createdAt: formData.createdAt,
     };
 
     try {
@@ -68,10 +86,24 @@ const NewJobForm = () => {
 
       const result = await response.json();
       console.log('Job created successfully:', result);
-      // Optionally reset the form or redirect
+      setSuccessMessage('Job created successfully!');
+      setFormData({
+        jobTitle: '',
+        description: '',
+        location: '',
+        jobType: '',
+        industry: '',
+        status: 'active',
+        createdAt: new Date().toISOString().split('T')[0],
+      });
+
+      // Redirect to job list page after creating the job
+      navigate('/jobs'); // Assuming the route for job list page is '/joblist'
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to create job. Please check the console for more details.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,6 +113,12 @@ const NewJobForm = () => {
         <div className="form-header text-center">
           <h2>New Job Post</h2>
         </div>
+
+        {successMessage && (
+          <div className="alert alert-success" role="alert">
+            {successMessage}
+          </div>
+        )}
 
         {/* Job Title */}
         <div className="form-group">
@@ -95,9 +133,9 @@ const NewJobForm = () => {
             maxLength="32"
             required
           />
-          <small className="form-text text-muted">
-            The title must contain a maximum of 32 characters.
-          </small>
+          {errors.jobTitle && (
+            <small className="form-text text-danger">{errors.jobTitle}</small>
+          )}
         </div>
 
         {/* Description */}
@@ -113,9 +151,9 @@ const NewJobForm = () => {
             rows="4"
             required
           />
-          <small className="form-text text-muted">
-            Give your job a good description so everyone knows what it's for.
-          </small>
+          {errors.description && (
+            <small className="form-text text-danger">{errors.description}</small>
+          )}
         </div>
 
         {/* Location */}
@@ -130,6 +168,9 @@ const NewJobForm = () => {
             onChange={handleChange}
             required
           />
+          {errors.location && (
+            <small className="form-text text-danger">{errors.location}</small>
+          )}
         </div>
 
         {/* Job Type */}
@@ -148,6 +189,9 @@ const NewJobForm = () => {
             <option value="full_time">Full Time</option>
             <option value="remote">Remote</option>
           </select>
+          {errors.jobType && (
+            <small className="form-text text-danger">{errors.jobType}</small>
+          )}
         </div>
 
         {/* Industry */}
@@ -162,6 +206,9 @@ const NewJobForm = () => {
             onChange={handleChange}
             required
           />
+          {errors.industry && (
+            <small className="form-text text-danger">{errors.industry}</small>
+          )}
         </div>
 
         {/* Status */}
@@ -181,7 +228,9 @@ const NewJobForm = () => {
           </select>
         </div>
 
-        <button type="submit" className="btn btn-primary">Create Job Post</button>
+        <button type="submit" className="btn btn-primary" disabled={isLoading}>
+          {isLoading ? 'Creating...' : 'Post Job'}
+        </button>
       </form>
     </div>
   );

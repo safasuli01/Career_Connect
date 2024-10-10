@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Add this line
-import './ProjectPost.css'; // Include the CSS file for custom styles
+import { useNavigate } from 'react-router-dom';
+import './ProjectPost.css';
 
 const NewProjectForm = () => {
   const navigate = useNavigate();
@@ -13,15 +13,6 @@ const NewProjectForm = () => {
     budget: '',
     deadline: '',
   });
-
-  // Set created_at when the component mounts
-  useEffect(() => {
-    const createdAt = new Date().toISOString();
-    setFormData((prevData) => ({
-      ...prevData,
-      created_at: createdAt, // This will be sent to the backend
-    }));
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,14 +40,9 @@ const NewProjectForm = () => {
       return;
     }
 
-    // Remove created_at from being sent if your backend does not expect it
-    const { created_at, ...dataToSend } = formData;
-
-    console.log('Form Data:', dataToSend);
-
     try {
-      // Make the POST request without token for authorization
-      const response = await axios.post('http://127.0.0.1:8000/project/create/', dataToSend);
+      // Make the POST request to the backend API
+      const response = await axios.post('http://127.0.0.1:8000/api/project/create/', formData);
       console.log('Project created successfully:', response.data);
 
       // Redirect to Project List and pass the new project data
@@ -107,20 +93,16 @@ const NewProjectForm = () => {
         {/* Industry */}
         <div className="form-group">
           <label htmlFor="industry">Industry</label>
-          <select
+          <input 
             className="form-control"
             id="industry"
-            name="industry"
+            name="industry"      
+            placeholder="Enter industry"
             value={formData.industry}
             onChange={handleChange}
+            maxLength="32"
             required
-          >
-            <option value="" disabled>Select an industry</option>
-            <option value="Tech">Tech</option>
-            <option value="Finance">Finance</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Education">Education</option>
-          </select>
+          />
         </div>
 
         {/* Post Status */}

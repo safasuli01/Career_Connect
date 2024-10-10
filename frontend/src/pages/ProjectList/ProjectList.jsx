@@ -1,134 +1,148 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
+import { Container, Row, Col, Form, InputGroup, Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const ProjectList = () => {
+function ProjectListComponent() {
   const [projects, setProjects] = useState([]);
-  const [industry, setIndustry] = useState('');
-  const [skills, setSkills] = useState('');
-  const [budget, setBudget] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIndustry, setSelectedIndustry] = useState('All Industries');
+  const [selectedStatus, setSelectedStatus] = useState('All Status');
+  const [industries, setIndustries] = useState([]); // State to store unique industries
+  const navigate = useNavigate();
 
+  // Fetch project list from backend
   useEffect(() => {
-    // Fetch the projects from the backend
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/project/all/');
-        setProjects(response.data);  // Set the projects into state
+        const response = await axios.get('http://127.0.0.1:8000/api/project/all/');
+        setProjects(response.data);
+
+        // Extract unique industries from the project data
+        const uniqueIndustries = [...new Set(response.data.map(project => project.industry))];
+        setIndustries(uniqueIndustries);
+
       } catch (error) {
-        console.error('Error fetching project list:', error);
+        console.error('Error fetching projects:', error);
       }
     };
-
     fetchProjects();
-  }, []);  // Run this effect on component mount
+  }, []);
 
-  // Function to handle filter application
-  const handleApplyFilters = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/project/all/', {
-        params: { industry, skills, budget },
-      });
-      setProjects(response.data);
-    } catch (error) {
-      console.error('Error fetching filtered projects:', error);
-    }
+  // Filter projects based on search term, industry, and status
+  const filteredProjects = projects.filter((project) => {
+    return (
+      (selectedIndustry === 'All Industries' || project.industry === selectedIndustry) &&
+      (selectedStatus === 'All Status' || project.post_status === selectedStatus) &&
+      (project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.industry.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
+  const handleProjectClick = (id) => {
+    navigate(`/projectdetails/${id}`);
+  };
+
+  const handleCreateNewProject = () => {
+    navigate('/projectpost');
   };
 
   return (
     <Container className="mt-5">
-      {/* Top Button to Add New Project */}
-      <div className="d-flex w-25 mb-4">
-        <Button variant="primary" onClick={() => window.location.href = '/projectpost'}>
-          Upload New Project
-        </Button>
+      {/* New Project Button */}
+      <div className='text-center'>
+        <h2 className="text-center">WE HAVE {projects.length} PROJECTS AVAILABLE</h2>
+        <p className="text-center">Join us in bringing innovative projects to life!</p>
       </div>
 
-      <Row>
-        {/* Filters Column */}
+      <Row className="mb-3 w-25">
+        <Col className="text-end ">
+          <Button variant="primary" onClick={handleCreateNewProject}>
+            + New Project
+          </Button>
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        {/* Filters Section */}
         <Col md={3}>
-          <Card className="mb-4">
-            <Card.Body>
-              <Card.Title>Filters</Card.Title>
-              
-              {/* Industry Filter */}
-              <Form.Group className="mb-3">
-                <Form.Label>Industry</Form.Label>
-                <Form.Control as="select" onChange={(e) => setIndustry(e.target.value)}>
-                  <option value="">All Industries</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Finance">Finance</option>
-                  {/* Add more industries as needed */}
-                </Form.Control>
-              </Form.Group>
-              
-              {/* Skills Filter */}
-              <Form.Group className="mb-3">
-                <Form.Label>Skills</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter skills (e.g., React.js, Node.js)"
-                  onChange={(e) => setSkills(e.target.value)}
-                />
-              </Form.Group>
-              
-              {/* Average Budget Filter */}
-              <Form.Group className="mb-3">
-                <Form.Label>Average Budget</Form.Label>
-                <Form.Control as="select" onChange={(e) => setBudget(e.target.value)}>
-                  <option value="">All Budgets</option>
-                  <option value="Below $10/hour">Below $10/hour</option>
-                  <option value="$10 - $20/hour">$10 - $20/hour</option>
-                  <option value="Above $20/hour">Above $20/hour</option>
-                </Form.Control>
-              </Form.Group>
-              
-              <Button variant="primary" className="w-100" onClick={handleApplyFilters}>
-                Apply Filters
-              </Button>
-            </Card.Body>
+          <Card className="mb-4 p-3">
+            <h5>Filter Projects</h5>
+
+            <Form.Group controlId="industry" className="mb-3">
+              <Form.Label>Industry</Form.Label>
+              <Form.Select
+                value={selectedIndustry}
+                onChange={(e) => setSelectedIndustry(e.target.value)}
+              >
+                <option value="All Industries">All Industries</option>
+                {industries.map((industry, index) => (
+                  <option key={index} value={industry}>
+                    {industry}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group controlId="status" className="mb-3">
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="All Status">All Status</option>
+                <option value="active">Active</option>
+                <option value="draft">Draft</option>
+                <option value="disabled">Disabled</option>
+              </Form.Select>
+            </Form.Group>
           </Card>
         </Col>
 
-        
-        {/* Projects Column */}
+        {/* Project Listings Section */}
         <Col md={9}>
+          <InputGroup className="mb-3">
+            <Form.Control
+              placeholder="Search projects"
+              aria-label="Project search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </InputGroup>
+
+          {/* Project List */}
           <Row>
-            {projects.length > 0 ? (
-              projects.map((project) => (
-                <Col md={12} key={project.id} className="mb-3">
-                  <Card>
-                    <Card.Body>
-                      <Card.Title>
-                        <a href={`/projectdetails/${project.id}`} className="text-primary">
-                          {project.title}
-                        </a>
-                      </Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        Budget: {project.budget}
-                      </Card.Subtitle>
-                      <Card.Text>
-                        {project.description}{' '}
-                        <Button
-                          variant="link"
-                          className="p-0 text-decoration-none"
-                          href={`/projectdetails/${project.id}`}
-                        >
-                          Show more
-                        </Button>
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))
-            ) : (
-              <p>No projects available</p>
-            )}
+            {filteredProjects.map((project) => (
+              <Col md={12} key={project.id} className="mb-3">
+                <Card>
+                  <Card.Body>
+                    <Card.Title>
+                      <a
+                        href="#"
+                        className="text-primary"
+                        onClick={() => handleProjectClick(project.id)}
+                      >
+                        {project.title}
+                      </a>
+                    </Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      Industry: {project.industry} | Author: {project.author}
+                    </Card.Subtitle>
+                    <Card.Text>
+                      Status: {project.post_status}
+                    </Card.Text>
+                    <Button variant="link" className="p-0 text-decoration-none" onClick={() => handleProjectClick(project.id)}>
+                      Show more
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
           </Row>
         </Col>
       </Row>
     </Container>
   );
-};
+}
 
-export default ProjectList;
+export default ProjectListComponent;

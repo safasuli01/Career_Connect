@@ -1,51 +1,96 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Badge, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faUsers, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt, faUsers, faMapMarkerAlt, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const JobDetails = () => {
+  const { id } = useParams(); // Get the job ID from the URL
+  const navigate = useNavigate(); // Hook to navigate
+  const [jobDetails, setJobDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/job/${id}/`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setJobDetails(data);
+      } catch (error) {
+        console.error('Error fetching job details:', error);
+        setError('Failed to load job details. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobDetails();
+  }, [id]);
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this job?')) {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/job/${id}/delete/`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          alert('Job deleted successfully');
+          navigate('/jobs'); // Redirect to job list
+        } else {
+          alert('Failed to delete the job');
+        }
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Container className="mt-5">
       <Row>
         <Col md={8}>
-          <h5>Senior Software Engineer, Marketing</h5>
+          <h5>{jobDetails.title}</h5>
+          <span className='text-muted'>{jobDetails.industry}</span>
+
           <div className="d-flex align-items-center mb-3">
             <Button variant="primary" className="me-2 w-25">
               Apply
             </Button>
-          
+            <Button variant="warning" className="me-2" onClick={() => navigate(`/job/${id}/update/`)}>
+              <FontAwesomeIcon icon={faEdit} /> Edit
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              <FontAwesomeIcon icon={faTrash} /> Delete
+            </Button>
           </div>
 
-
-
-          <h5>ABOUT ROCKET MONEY</h5>
-          <p>
-            Rocket Money’s mission is to empower people to live their best financial lives. Rocket Money offers members a unique understanding of their finances and a suite of valuable services that save them time and money – ultimately giving them a leg up on their financial journey.
-          </p>
-
-          <h5>ABOUT THE TEAM</h5>
-          <p>
-            Team Luna is Rocket Money’s growth engineering team. From the moment someone first hears about Rocket Money, through their first few days of using the platform, our code makes sure that a user’s first interactions are seamless, valuable, and delightful.
-          </p>
-
-          <ul>
-            <li>Engineering experiences across web and mobile platforms</li>
-            <li>Collaborating with product, marketing, and data teams</li>
-          </ul>
+          <h5>ABOUT THE JOB</h5>
+          <p>{jobDetails.description}</p>
         </Col>
 
         <Col md={4}>
           <div className="card p-3">
             <h5>Overview</h5>
             <p>
-              <FontAwesomeIcon icon={faCalendarAlt} /> 23 days ago
+              <FontAwesomeIcon icon={faCalendarAlt} /> Posted {jobDetails.posted_days_ago} days ago
             </p>
             <p>
-              <FontAwesomeIcon icon={faUsers} /> 200-500 Employees
+              <FontAwesomeIcon icon={faUsers} /> {jobDetails.company_size} Employees
             </p>
             <p>
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> San Francisco, CA, Washington, D.C., NYC, Remote (USA)
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> {jobDetails.location}
             </p>
             <div className="mt-3">
               <Badge bg="success">Apply</Badge>

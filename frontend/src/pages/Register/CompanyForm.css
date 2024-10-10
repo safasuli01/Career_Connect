@@ -73,3 +73,12 @@
   color: #2c9caf;
   border: 2px solid #2c9caf;
 }
+
+.form-control.is-invalid {
+  border-color: red;
+}
+
+.invalid-feedback {
+  color: red;
+  font-size: 0.875em;
+}

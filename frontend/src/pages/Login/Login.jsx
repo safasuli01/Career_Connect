@@ -1,26 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie"; // Import js-cookie for token storage
 import "./Login.css"; // Import the CSS styles
-import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [csrfToken, setCsrfToken] = useState(""); // State to store the CSRF token
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
+  // Fetch CSRF token on component mount
+  useEffect(() => {
+    const getCsrfToken = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/auth/csrf/", {
+          withCredentials: true, 
+        });
+        setCsrfToken(response.data.getCsrfToken);
+      } catch (error) {
+        console.log("Error fetching CSRF token:", error);
+      }
+    };
+    getCsrfToken();
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
-      const response = await axios.post("http://127.0.0.1:8000/individual/login/", {
-        username: email,
-        password: password,
-      });
-      
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/auth/login/",
+        {
+          username: email,
+          password: password,
+        },
+        {
+          headers: {
+            "X-CSRFToken": csrfToken, // Send the CSRF token in the headers
+          },
+          withCredentials: true, // Include credentials (cookies)
+        }
+      );
+
       const token = response.data.token;
+
       if (token) {
+        // Save token to localStorage (or sessionStorage)
         localStorage.setItem("authToken", token);
-        navigate("/"); // Navigate to landing page
+
+        // Save token to cookies with a 7-day expiration
+        Cookies.set("authToken", token, { expires: 7 });
+
+        // Optionally, store user details
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        // Redirect to a protected route (landing page)
+        navigate("/");
+
       } else {
         setErrorMessage("Failed to retrieve token. Please try again.");
       }
@@ -32,7 +70,6 @@ const Login = () => {
       }
     }
   };
-  
 
   return (
     <div className="wrapper fadeInDown">
@@ -61,11 +98,7 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <input
-            type="submit"
-            className="fadeIn fourth"
-            value="Log In"
-          />
+          <input type="submit" className="fadeIn fourth" value="Log In" />
         </form>
 
         <div id="formFooter">
