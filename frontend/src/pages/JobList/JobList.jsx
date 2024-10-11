@@ -16,7 +16,7 @@ function JobListComponent() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/job/all/');
+        const response = await fetch('http://127.0.0.1:8000/api/job/all/');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -26,7 +26,6 @@ function JobListComponent() {
         // Extract unique industries from the job data
         const uniqueIndustries = [...new Set(data.map(job => job.industry))];
         setIndustries(uniqueIndustries);
-
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
@@ -137,7 +136,8 @@ function JobListComponent() {
                     <Card.Text>
                       Industry: {job.industry} <br />
                       Job Type: {job.job_type} <br />
-                      Status: {job.post_status}
+                      Status: {job.post_status} <br />
+                      Author: {job.author_username} {/* Display Author's Username */}
                     </Card.Text>
                     <Button variant="link" className="p-0 text-decoration-none" onClick={() => handleJobClick(job.id)}>
                       Show more

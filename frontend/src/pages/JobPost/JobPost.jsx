@@ -58,9 +58,9 @@ const NewJobForm = () => {
       setErrors(validationErrors);
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     const formDataToSend = {
       title: formData.jobTitle,
       description: formData.description,
@@ -70,20 +70,24 @@ const NewJobForm = () => {
       post_status: formData.status,
       createdAt: formData.createdAt,
     };
-
+  
     try {
-      const response = await fetch('http://127.0.0.1:8000/job/create/', {
+      // Get the authentication token from localStorage
+      const token = localStorage.getItem('authToken'); // Ensure the token is stored in localStorage
+  
+      const response = await fetch('http://127.0.0.1:8000/api/job/create/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`, // Add the token to the Authorization header
         },
         body: JSON.stringify(formDataToSend),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+  
       const result = await response.json();
       console.log('Job created successfully:', result);
       setSuccessMessage('Job created successfully!');
@@ -96,9 +100,9 @@ const NewJobForm = () => {
         status: 'active',
         createdAt: new Date().toISOString().split('T')[0],
       });
-
+  
       // Redirect to job list page after creating the job
-      navigate('/jobs'); // Assuming the route for job list page is '/joblist'
+      navigate('/jobs'); // Assuming the route for job list page is '/jobs'
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to create job. Please check the console for more details.');
@@ -106,6 +110,7 @@ const NewJobForm = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="new-job-form">

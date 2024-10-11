@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./LandingPage.css"; 
 import axios from 'axios';
+import "./LandingPage.css"; 
 import image1 from '../../assets/culture/1.avif'; 
 import image2 from '../../assets/culture/2.avif';
 import image3 from '../../assets/culture/3.avif';
@@ -19,15 +19,17 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/job/all/');
-        setJobs(response.data);
-
-        // Extract unique job types and industries
-        const uniqueJobTypes = [...new Set(response.data.map(job => job.job_type))];
-        const uniqueIndustries = [...new Set(response.data.map(job => job.industry))];
-        setJobTypes(uniqueJobTypes);
+        const response = await fetch('http://127.0.0.1:8000/api/job/all/');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Jobs from backend:", data); // Add this line to log the jobs
+        setJobs(data);
+    
+        // Extract unique industries
+        const uniqueIndustries = [...new Set(data.map(job => job.industry))];
         setIndustries(uniqueIndustries);
-
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
@@ -44,6 +46,8 @@ const LandingPage = () => {
         job.location.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   });
+
+  console.log('Filtered jobs:', filteredJobs); // Log filtered jobs to see if filtering works
 
   // Handle Apply button click
   const handleApplyClick = (id) => {
@@ -114,24 +118,28 @@ const LandingPage = () => {
       <section className="card-section py-5">
         <div className="container">
           <div className="row">
-            {filteredJobs.map((job) => (
-              <div key={job.id} className="col-md-4">
-                <div className="card cards bg-light mb-4">
-                  <div className="card-body">
-                    <h6 className="card-title text-secondary">{job.industry}</h6>
-                    <h5 className="card-title">{job.title}</h5>
-                    <p className="card-text text-muted">{job.location}</p>
-                    <button
-                      type="button" 
-                      className="btn btn-outline-info"
-                      onClick={() => handleApplyClick(job.id)}
-                    >
-                      Apply &gt;
-                    </button>
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => (
+                <div key={job.id} className="col-md-4">
+                  <div className="card cards bg-light mb-4">
+                    <div className="card-body">
+                      <h6 className="card-title text-secondary">{job.industry}</h6>
+                      <h5 className="card-title">{job.title}</h5>
+                      <p className="card-text text-muted">{job.location}</p>
+                      <button
+                        type="button" 
+                        className="btn btn-outline-info"
+                        onClick={() => handleApplyClick(job.id)}
+                      >
+                        Apply &gt;
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No jobs found.</p> // Show this if no jobs match the filter
+            )}
           </div>
         </div>
       </section>

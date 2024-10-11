@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Badge, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faUsers, faMapMarkerAlt, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import Cookies from 'js-cookie'; // Use js-cookie to retrieve cookies
 
 const JobDetails = () => {
   const { id } = useParams(); // Get the job ID from the URL
@@ -13,11 +14,26 @@ const JobDetails = () => {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
+      const token = localStorage.getItem('authToken') || Cookies.get('authToken'); // Retrieve token from localStorage or cookies
+      console.log('Token:', token); // Check if the token is correctly retrieved
+
+      if (!token) {
+        alert('Unauthorized access. Please log in again.');
+        navigate('/login');
+        return;
+      }
+
       try {
-        const response = await fetch(`http://127.0.0.1:8000/job/${id}/`);
+        const response = await fetch(`http://127.0.0.1:8000/api/job/${id}/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Add token to headers
+          },
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
         const data = await response.json();
         setJobDetails(data);
       } catch (error) {
@@ -29,23 +45,41 @@ const JobDetails = () => {
     };
 
     fetchJobDetails();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/job/${id}/delete/`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          alert('Job deleted successfully');
-          navigate('/jobs'); // Redirect to job list
+    // Add a confirmation dialog before deleting
+    const confirmDelete = window.confirm("Are you sure you want to delete this job? This action cannot be undone.");
+
+    if (!confirmDelete) {
+      return; // Exit if the user cancels the deletion
+    }
+
+    const token = localStorage.getItem('authToken'); // Ensure the token is stored in localStorage
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/job/${id}/delete/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`, // Make sure it's `Token` followed by the actual token
+        },
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          alert('Unauthorized: Please log in.');
+        } else if (response.status === 403) {
+          alert('Forbidden: You do not have permission to delete this job.');
         } else {
-          alert('Failed to delete the job');
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      } catch (error) {
-        console.error('Error deleting job:', error);
+      } else {
+        alert('Job deleted successfully');
+        // Optionally navigate to a different page after deletion
+        navigate('/jobs'); // Assuming you have a list of jobs here
       }
+    } catch (error) {
+      console.error('Error deleting the job:', error);
     }
   };
 
@@ -78,6 +112,7 @@ const JobDetails = () => {
 
           <h5>ABOUT THE JOB</h5>
           <p>{jobDetails.description}</p>
+          <p>Posted by: {jobDetails.author_username}</p> {/* Display Author's Username */}
         </Col>
 
         <Col md={4}>

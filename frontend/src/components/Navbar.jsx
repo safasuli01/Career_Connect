@@ -43,11 +43,7 @@ function AppNavbar() {
                   <FontAwesomeIcon icon={faHome} className="me-1" /> Home
                 </Link>
               </Nav.Item>
-              <Nav.Item className="nav-item">
-                <Link className="nav-link underlineHover" to="/about" style={{ color: '#2c9caf', fontSize: '16px' }}>
-                  <FontAwesomeIcon icon={faUser} className="me-1 " /> About
-                </Link>
-              </Nav.Item>
+
               <Nav.Item className="nav-item">
                 <Link className="nav-link underlineHover" to="/jobs" style={{ color: '#2c9caf', fontSize: '16px' }}>
                   <FontAwesomeIcon icon={faBriefcase} className="me-1" /> Find Jobs
@@ -62,9 +58,15 @@ function AppNavbar() {
 
             {/* Login Button */}
             <Nav className="ms-auto ">
-              <Link to="/login" style={{ textDecoration: 'none', color: '#2c9caf' }}>
+              <Link to="/login" style={{ textDecoration: 'none', color: '#2c9caf', marginRight:'10px' }}>
                 Login
               </Link>
+
+                
+              <Link  to="/profile" style={{ textDecoration: 'none', color: '#2c9caf'  }}>
+              profile
+              </Link>
+
             </Nav>
           </div>
         </Container>

@@ -24,13 +24,19 @@ const ProjectDetails = () => {
   }, [id]);
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this project?')) {
+    if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/project/${id}/delete/`);
+        const token = localStorage.getItem('authToken');  // Fetch token from localStorage
+        await axios.delete(`http://127.0.0.1:8000/api/project/${id}/delete/`, {
+          headers: {
+            'Authorization': `Token ${token}`,  // Include token in headers
+          },
+        });
         alert('Project deleted successfully');
         navigate('/projects');  // Redirect to project list
       } catch (error) {
         console.error('Error deleting project:', error);
+        alert('Failed to delete project. Please try again.');
       }
     }
   };

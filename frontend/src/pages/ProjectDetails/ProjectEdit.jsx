@@ -13,7 +13,6 @@ const EditProject = () => {
     post_status: 'active', // Set default post status
     budget: '',
     deadline: '',
-   
   });
 
   // Fetch project details when the component mounts
@@ -40,7 +39,13 @@ const EditProject = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Get the token from local storage
+    const token = localStorage.getItem('authToken'); // Retrieve the token using the correct key
+
+    if (!token) {
+      alert('No authentication token found. Please login again.');
+      navigate('/login'); // Redirect the user to the login page if the token is missing
+      return;
+    }
 
     try {
       await axios.put(`http://127.0.0.1:8000/api/project/${id}/update/`, project, {
@@ -51,8 +56,18 @@ const EditProject = () => {
       alert('Project updated successfully');
       navigate(`/projectdetails/${id}`); // Navigate to the project details page
     } catch (error) {
-      console.error('Error updating project:', error);
-      alert('Failed to update project: ' + (error.response?.data?.detail || 'An error occurred'));
+      if (error.response) {
+        if (error.response.status === 401) {
+          // Invalid or expired token
+          alert('Session expired. Please login again.');
+          localStorage.removeItem('authToken'); // Remove the invalid token
+          navigate('/login'); // Redirect to login page
+        } else {
+          alert('Failed to update project: ' + (error.response?.data?.detail || 'An error occurred'));
+        }
+      } else {
+        alert('Failed to update project: An unexpected error occurred.');
+      }
     }
   };
 
@@ -124,9 +139,8 @@ const EditProject = () => {
 
         {/* Budget */}
         <div className="form-group">
-          <label htmlFor="budget">Budget (Range)</label>
+          <label htmlFor="budget">Budget</label>
           <input
-            type="number"
             className="form-control"
             id="budget"
             name="budget"
@@ -141,17 +155,20 @@ const EditProject = () => {
         <div className="form-group">
           <label htmlFor="deadline">Deadline</label>
           <input
-            type="date"
             className="form-control"
             id="deadline"
             name="deadline"
+            type="date"
             value={project.deadline}
             onChange={handleChange}
             required
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Update Project</button>
+        {/* Submit Button */}
+        <button type="submit" className="btn btn-primary">
+          Update Project
+        </button>
       </form>
     </Container>
   );
