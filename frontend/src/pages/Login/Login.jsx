@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from '../../contexts/AuthContext'; // Import the Auth context
 import Cookies from "js-cookie"; // Import js-cookie for token storage
 import "./Login.css"; // Import the CSS styles
 
@@ -10,7 +11,8 @@ const Login = () => {
   const [csrfToken, setCsrfToken] = useState(""); // State to store the CSRF token
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-
+  const { login, setIsAuthenticated } = useAuth(); // Destructure login and setIsAuthenticated
+  
   // Fetch CSRF token on component mount
   useEffect(() => {
     const getCsrfToken = async () => {
@@ -55,7 +57,9 @@ const Login = () => {
 
         // Optionally, store user details
         localStorage.setItem("user", JSON.stringify(response.data.user));
-
+        login(); // Call the login function to update auth state
+        setIsAuthenticated(true); // Set authentication state to true
+        
         // Redirect to a protected route (landing page)
         navigate("/");
 

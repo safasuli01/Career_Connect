@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
 import "./LandingPage.css"; 
+import { useAuth } from '../../contexts/AuthContext'; // Import the Auth context
 import image1 from '../../assets/culture/1.avif'; 
 import image2 from '../../assets/culture/2.avif';
 import image3 from '../../assets/culture/3.avif';
@@ -14,6 +14,7 @@ const LandingPage = () => {
   const [jobTypes, setJobTypes] = useState([]);
   const [industries, setIndustries] = useState([]);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth(); // Get authentication status from AuthContext
 
   // Fetch jobs from the backend
   useEffect(() => {
@@ -24,7 +25,7 @@ const LandingPage = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Jobs from backend:", data); // Add this line to log the jobs
+        console.log("Jobs from backend:", data);
         setJobs(data);
     
         // Extract unique industries
@@ -47,12 +48,17 @@ const LandingPage = () => {
     );
   });
 
-  console.log('Filtered jobs:', filteredJobs); // Log filtered jobs to see if filtering works
+  console.log('Filtered jobs:', filteredJobs);
 
   // Handle Apply button click
   const handleApplyClick = (id) => {
     console.log('Navigating to job details for ID:', id);
     navigate(`/jobdetails/${id}`);
+  };
+
+  // Handle Get Started button click to navigate to the login page
+  const handleGetStarted = () => {
+    navigate('/login');
   };
 
   return (
@@ -62,7 +68,13 @@ const LandingPage = () => {
         <div className="container">
           <h1 className="display-4" style={{ color: '#324b50' }}>Welcome to Career Connect</h1>
           <p className="lead" style={{ color: '#324b50' }}>Your gateway to amazing opportunities.</p>
-          <button className="button">Get Started</button>
+
+          {/* Show "Get Started" button only if the user is NOT authenticated */}
+          {!isAuthenticated && (
+            <button className="button" onClick={handleGetStarted}>
+              Get Started
+            </button>
+          )}
         </div>
       </section>
 

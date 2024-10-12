@@ -17,9 +17,10 @@ import ProjectPost from '../pages/ProjectPost/Projectpost.jsx';
 import EditProject from '../pages/ProjectDetails/ProjectEdit.jsx'; 
 import JobPost from '../pages/JobPost/JobPost.jsx';
 import UpdateJob from '../pages/JobDetails/UpdateJob.jsx';
-
+import { AuthProvider } from '../contexts/AuthContext.jsx';  // Import your AuthContext
 function AppRoutes() {
   return (
+  <AuthProvider> {/* Wrap the Router inside the AuthProvider */}
     <Router>
       <AppNavbar /> 
       <Routes>
@@ -46,6 +47,7 @@ function AppRoutes() {
       </Routes>
       <Footer /> 
     </Router>
+  </AuthProvider>
   );
 }
 

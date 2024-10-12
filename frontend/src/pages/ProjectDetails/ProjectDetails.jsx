@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Button, Badge,Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faMapMarkerAlt, faMoneyBill, faClock, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import { faEdit, faTrash, faCalendarAlt, faMoneyBill, faClock } from '@fortawesome/free-solid-svg-icons';import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ProjectDetails = () => {
@@ -47,60 +46,72 @@ const ProjectDetails = () => {
 
   return (
     <Container className="mt-5">
-      <Row>
-        {/* Project Main Details */}
-        <Col md={8}>
-          <h5>{project.title}</h5>
-          <span>{project.industry}</span>
-          <div className="mb-3">
-            <Button variant="warning" className="me-2" href={`/project/${id}/update/`}>
-              <FontAwesomeIcon icon={faEdit} /> Edit
-            </Button>
-            <Button variant="danger" onClick={handleDelete}>
-              <FontAwesomeIcon icon={faTrash} /> Delete
-            </Button>
+    <Row>
+
+      <h2>{project.title}</h2>
+
+      {/* Project Main Details */}
+      <Col md={8}>
+        <div className="project-header mb-4">
+          <p className="text-muted">by {project.author_username}</p>
+          <h6 className="text-info">{project.industry}</h6>
+        </div>
+
+
+
+        <h5 className="mt-4">Project Details</h5>
+        <p>{project.description}</p>
+
+        {/* Contact Button */}
+        <div className="d-flex align-items-center mb-3">
+          <Button variant="success" className="me-2 w-25">
+            Contact me
+          </Button>
+        </div>
+      </Col>
+
+      {/* Overview Section */}
+      <Col md={4}>
+        <Card className="p-3 shadow-sm overview-card mb-4">
+          <h5>Overview</h5>
+          <p>
+            <FontAwesomeIcon icon={faCalendarAlt} /> Created on {project.datePosted}
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faMoneyBill} /> Budget: {project.budget}
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faClock} /> Deadline: {project.deadline}
+          </p>
+          <div className="mt-3">
+            <Badge bg={project.post_status === 'active' ? 'success' : 'secondary'}>
+              {project.post_status.charAt(0).toUpperCase() + project.post_status.slice(1)}
+            </Badge>
           </div>
-          <h5>Project Details</h5>
 
-          {/* Description Section */}
-          <p>{project.description}</p>
+          
+        </Card>
 
-          {/* Author and Post Status */}
-          <p><strong>Author:</strong> {project.author_username}</p>
-          <p><strong>Status:</strong> {project.post_status}</p>
-
-          <div className="d-flex align-items-center mb-3">
-            <Button variant="primary" className="me-2 w-25">
-              Contact me
-            </Button>
-          </div>
-        </Col>
-
-        {/* Overview Section */}
-        <Col md={4}>
-          <div className="card p-3">
-            <h5>Overview</h5>
-            <p>
-              <FontAwesomeIcon icon={faCalendarAlt} /> Created {project.datePosted}
-            </p>
-            <p>
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> {project.location}
-            </p>
-            <p>
-              <FontAwesomeIcon icon={faMoneyBill} /> Budget: {project.budget}
-            </p>
-            <p>
-              <FontAwesomeIcon icon={faClock} /> Deadline: {project.deadline}
-            </p>
-            <div className="mt-3">
-              <Badge bg={project.post_status === 'active' ? 'success' : 'secondary'}>
-                {project.post_status.charAt(0).toUpperCase() + project.post_status.slice(1)}
-              </Badge>
-            </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                {/* Action Buttons */}
+                <div className="action-buttons mb-3">
+          <Button
+            variant="outline-primary"
+            className="me-2 edit-btn"
+            href={`/project/${id}/update/`}
+          >
+            <FontAwesomeIcon icon={faEdit} /> Edit
+          </Button>
+          <Button
+            variant="outline-danger"
+            className="delete-btn"
+            onClick={handleDelete}
+          >
+            <FontAwesomeIcon icon={faTrash} /> Delete
+          </Button>
+        </div>
+      </Col>
+    </Row>
+  </Container>
   );
 };
 

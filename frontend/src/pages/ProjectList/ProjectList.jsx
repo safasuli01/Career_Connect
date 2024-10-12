@@ -126,7 +126,10 @@ function ProjectListComponent() {
                       </a>
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
-                      Industry: {project.industry} | Author: {project.author}
+                     {project.industry}
+                   <p> {project.author_username}
+                    </p>
+
                     </Card.Subtitle>
                     <Card.Text>
                       Status: {project.post_status}
