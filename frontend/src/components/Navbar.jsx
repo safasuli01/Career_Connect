@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Navbar as BootstrapNavbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { faHome, faBriefcase, faProjectDiagram, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../contexts/AuthContext'; // Import the Auth context
+import { useAuth } from '../contexts/AuthContext'; 
 import axios from 'axios';
-import "./style.css";
+import './style.css';
 import Logo from '../../src/assets/logo3.jpg';
 
 function AppNavbar() {
-  const { isAuthenticated, logout, setIsAuthenticated } = useAuth(); // Use context for auth state
+  const { isAuthenticated, logout, setIsAuthenticated, userType, userId } = useAuth();
   const navigate = useNavigate();
 
-  // Check for token on component mount
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token); // Update auth state based on token presence
+    setIsAuthenticated(!!token);
   }, [setIsAuthenticated]);
 
-  // Handle user logout
   const handleLogout = async () => {
     const token = localStorage.getItem('authToken');
     if (token) {
@@ -28,15 +26,23 @@ function AppNavbar() {
             'Authorization': `Token ${token}`,
           },
         });
-
-        // Clear the token and update UI state
         localStorage.removeItem('authToken');
-        logout(); // Update auth state
-        navigate('/login'); // Redirect to login page
+        logout();
+        navigate('/login');
       } catch (error) {
         console.error('Error during logout:', error);
         alert('Logout failed. Please try again.');
       }
+    }
+  };
+
+  const navigateToProfile = () => {
+    if (userType === 'individual') {
+      navigate(`/individual/${userId}/profile`);
+    } else if (userType === 'company') {
+      navigate(`/company/${userId}/profile`);
+    } else {
+      console.log("Unknown user type or invalid data");
     }
   };
 
@@ -86,34 +92,29 @@ function AppNavbar() {
 
           <Nav className="ms-auto">
             {isAuthenticated ? (
-              <Dropdown >
+              <Dropdown>
                 <Dropdown.Toggle
                   variant="link"
                   id="dropdown-profile"
-                  style={{ textDecoration: 'none', color: '#2c9caf' }}
+                  style={{ textDecoration: 'none', color: '#2c9caf', fontSize: '16px' }}
                 >
-                  <FontAwesomeIcon icon={faUser} size="sm" /> {/* Profile Icon */}
+                  <FontAwesomeIcon icon={faUser} size="md" />
                 </Dropdown.Toggle>
-
-                <Dropdown.Menu align="center"
-                >
-                  <Dropdown.Item as={Link} to="/profile">
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={navigateToProfile}>
                     Profile
                   </Dropdown.Item>
-                  <Dropdown.Divider />
-                  
                   <Dropdown.Item onClick={handleLogout}>
-                    
                     Logout
-                    <i class="fa-solid fa-arrow-right-from-bracket ps-1"></i>
                   </Dropdown.Item>
-                  
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
-              <Link to="/login" style={{ textDecoration: 'none', color: '#2c9caf' }}>
-                Login
-              </Link>
+              <Nav.Item className="nav-item">
+                <Link className="nav-link underlineHover" to="/login" style={{ color: '#2c9caf', fontSize: '16px' }}>
+                  Login
+                </Link>
+              </Nav.Item>
             )}
           </Nav>
         </div>

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from '../../contexts/AuthContext'; // Import the Auth context
-import Cookies from "js-cookie"; // Import js-cookie for token storage
-import "./Login.css"; // Import the CSS styles
+import { useAuth } from '../../contexts/AuthContext'; 
+import Cookies from "js-cookie"; 
+import "./Login.css"; 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [csrfToken, setCsrfToken] = useState(""); // State to store the CSRF token
+  const [csrfToken, setCsrfToken] = useState(""); 
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { login, setIsAuthenticated } = useAuth(); // Destructure login and setIsAuthenticated
-  
-  // Fetch CSRF token on component mount
+  const { login, setIsAuthenticated } = useAuth(); 
+
   useEffect(() => {
     const getCsrfToken = async () => {
       try {
@@ -30,7 +29,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/auth/login/",
@@ -40,29 +39,36 @@ const Login = () => {
         },
         {
           headers: {
-            "X-CSRFToken": csrfToken, // Send the CSRF token in the headers
+            "X-CSRFToken": csrfToken,
           },
-          withCredentials: true, // Include credentials (cookies)
+          withCredentials: true,
         }
       );
-
-      const token = response.data.token;
-
+  
+      const { token, user } = response.data; // Company or individual info
+  
       if (token) {
-        // Save token to localStorage (or sessionStorage)
         localStorage.setItem("authToken", token);
 
-        // Save token to cookies with a 7-day expiration
+        const userType = user?.role; 
+        const userId = user?.id;
+
+        login(userType, userId); // Use userType and userId to set the user session
+
+        setIsAuthenticated(true); // Mark user as authenticated
+
         Cookies.set("authToken", token, { expires: 7 });
 
-        // Optionally, store user details
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        login(); // Call the login function to update auth state
-        setIsAuthenticated(true); // Set authentication state to true
-        
-        // Redirect to a protected route (landing page)
-        navigate("/");
+        localStorage.setItem(`user_${userId}`, JSON.stringify(user)); // Save user data with unique key
 
+        // Redirect to the correct profile page
+        if (userType === "company") {
+          navigate(`/company/${userId}/profile`);  // Redirect company user
+        } else if (userType === "individual") {
+          navigate(`/individual/${userId}/profile`);  // Redirect individual user
+        } else {
+          setErrorMessage("Unknown user type.");
+        }
       } else {
         setErrorMessage("Failed to retrieve token. Please try again.");
       }
@@ -74,7 +80,7 @@ const Login = () => {
       }
     }
   };
-
+  
   return (
     <div className="wrapper fadeInDown">
       <div id="formContent">
@@ -82,7 +88,6 @@ const Login = () => {
 
         {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-        {/* Login Form */}
         <form onSubmit={handleLogin}>
           <input
             type="text"
@@ -92,6 +97,7 @@ const Login = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             type="password"
@@ -101,19 +107,13 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <input type="submit" className="fadeIn fourth" value="Log In" />
         </form>
 
         <div id="formFooter">
-          <a className="underlineHover" href="#">
-            Forgot Password?
-          </a>
-        </div>
-        <div id="formFooter">
-          <Link to="/register" className="underlineHover">
-            Not a member? Register Now
-          </Link>
+          <Link className="underlineHover" to="/signup">Sign up</Link>
         </div>
       </div>
     </div>
