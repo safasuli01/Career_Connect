@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, InputGroup, Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import './ProjectList.css'; // Ensure you have relevant styles
+import defaultProfile from '../../assets/user.jpg'; // Default profile image
 
 function ProjectListComponent() {
   const [projects, setProjects] = useState([]);
@@ -15,11 +16,13 @@ function ProjectListComponent() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/project/all/');
-        setProjects(response.data);
+        const response = await fetch('http://127.0.0.1:8000/api/project/all/');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setProjects(data);
 
         // Extract unique industries from the project data
-        const uniqueIndustries = [...new Set(response.data.map(project => project.industry))];
+        const uniqueIndustries = [...new Set(data.map(project => project.industry))];
         setIndustries(uniqueIndustries);
 
       } catch (error) {
@@ -65,9 +68,8 @@ function ProjectListComponent() {
 
       <Row className="mt-4">
         {/* Filters Section */}
+        
         <Col md={3}>
-          <Card className="mb-4 p-3">
-            <h5>Filter Projects</h5>
 
             <Form.Group controlId="industry" className="mb-3">
               <Form.Label>Industry</Form.Label>
@@ -92,11 +94,9 @@ function ProjectListComponent() {
               >
                 <option value="All Status">All Status</option>
                 <option value="active">Active</option>
-                <option value="draft">Draft</option>
                 <option value="disabled">Disabled</option>
               </Form.Select>
             </Form.Group>
-          </Card>
         </Col>
 
         {/* Project Listings Section */}
@@ -114,30 +114,47 @@ function ProjectListComponent() {
           <Row>
             {filteredProjects.map((project) => (
               <Col md={12} key={project.id} className="mb-3">
-                <Card>
-                  <Card.Body>
-                    <Card.Title>
-                      <a
-                        href="#"
-                        className="text-primary"
-                        onClick={() => handleProjectClick(project.id)}
-                      >
-                        {project.title}
-                      </a>
-                    </Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
-                     {project.industry}
-                   <p> {project.author_username}
-                    </p>
-
-                    </Card.Subtitle>
-                    <Card.Text>
-                      Status: {project.post_status}
-                    </Card.Text>
-                    <Button variant="link" className="p-0 text-decoration-none" onClick={() => handleProjectClick(project.id)}>
-                      Show more
-                    </Button>
-                  </Card.Body>
+                <Card className="d-flex flex-row align-items-center justify-content-between p-3 shadow-sm hover-effect">
+                  <div className="d-flex align-items-center">
+                    {/* Profile Image */}
+                    <div className="me-3 text-center mt-2">
+                      <img
+                        src={
+                          project.author_profile_image 
+                          ? `http://127.0.0.1:8000${project.author_profile_image}` 
+                          : defaultProfile // Use default image if no profile image exists
+                        }
+                        alt="Profile"
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          objectFit: 'cover',
+                        }}                      />
+                      <p>{project.author_username || 'Unknown'}</p> {/* Display 'Unknown' if username is not provided */}
+                    </div>
+                    {/* Project Details */}
+                    <div>
+                      <Card.Title className="mb-2" style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>
+                        <a
+                          href="#"
+                          className="jobtitle fs-6"
+                          onClick={() => handleProjectClick(project.id)}
+                          style={{ textDecoration: 'none' }}
+                        >
+                          {project.title}
+                        </a>
+                      </Card.Title>
+                      <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                        <span>&bull; {project.industry}</span>
+                      </div>
+                      <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                        <span> &bull;
+                        {project.budget}
+                        <i class="fa-solid fa-dollar-sign text-muted ps-1"></i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               </Col>
             ))}
